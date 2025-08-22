@@ -244,7 +244,7 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
               </div>
             </div>
           </div>
-          <div className="patients-list">
+          {/* <div className="patients-list">
             {filteredPatients.length === 0 ? (
               <div className="no-patients">
                 <p>Hech qanday bemor topilmadi</p>
@@ -321,6 +321,82 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
                   </div>
                 </div>
               ))
+            )}
+          </div> */}
+          <div className="patients-list">
+            {filteredPatients.length === 0 ? (
+              <div className="no-patients">
+                <p>Hech qanday bemor topilmadi</p>
+              </div>
+            ) : (
+              <div className="patients-table-wrapper">
+                <table className="patients-table">
+                  <thead>
+                    <tr>
+                      <th>Ism</th>
+                      <th>ID</th>
+                      <th>Tel</th>
+                      <th>Manzil</th>
+                      <th>Yosh</th>
+                      <th>Jins</th>
+                      <th>To'lanmagan</th>
+                      <th>Holati</th>
+                      <th>Oxirgi tashrif</th>
+                      <th>Tarixlar</th>
+                      <th>Xona tarixi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredPatients.map((patient) => (
+                      <tr
+                        key={patient._id}
+                        className={`patient-row ${patient.treating ? "treating" : ""} ${patient.debtor ? "debtor" : ""}`}
+                        onClick={() => setSelectedPatient(patient)}
+                      >
+                        <td>
+                          <div className="patient-avatar"></div>
+                          {patient.firstname} {patient.lastname}</td>
+                        <td>{patient.idNumber}</td>
+                        <td>{patient.phone}</td>
+                        <td>{patient.address}</td>
+                        <td>
+                          {patient.year
+                            ? `${patient.year} yil (${new Date().getFullYear() - parseInt(patient.year)} yosh)`
+                            : "N/A"}
+                        </td>
+                        <td>
+                          {patient.gender === "erkak" || patient.gender === "male"
+                            ? "Erkak"
+                            : patient.gender === "ayol" || patient.gender === "female"
+                              ? "Ayol"
+                              : "N/A"}
+                        </td>
+                        <td>
+                          <span className={patient.totalUnpaidAmount > 0 ? "unpaid-amount" : ""}>
+                            {patient.totalUnpaidAmount > 0 ? formatCurrency(patient.totalUnpaidAmount) : "-"}
+                          </span>
+                        </td>
+                        <td>
+                          {patient.treating && (
+                            <span className="status treating">
+                              <Stethoscope size={16} /> Davolanmoqda
+                            </span>
+                          )}
+                          {patient.debtor && (
+                            <span className="status debtor">
+                              <CreditCard size={16} /> Qarzdor
+                            </span>
+                          )}
+                        </td>
+                        <td>{moment(patient.lastVisit).format("DD.MM.YYYY")}</td>
+                        <td>{patient.stories?.length || 0}</td>
+                        <td>{patient.roomStories?.length || 0}</td>
+                      </tr>
+                    ))}
+
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>
