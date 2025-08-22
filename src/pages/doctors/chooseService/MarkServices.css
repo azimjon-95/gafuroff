@@ -1,0 +1,565 @@
+.mark-services-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mark-services-table .ant-table-thead>tr>th {
+    background-color: #f0f2f5;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    padding: 12px;
+}
+
+.mark-services-table .ant-table-tbody>tr>td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.table-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.status-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.mark-services-table .ant-table-tbody>tr:hover>td {
+    background-color: #fafafa;
+}
+
+.mark-services-table .ant-checkbox-wrapper {
+    margin: 0;
+}
+
+.mark-services-table .anticon {
+    vertical-align: middle;
+}
+
+/* ========================================================== */
+
+
+/* Main container styles */
+.patients-management-container {
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+
+.patients-table-modern-design {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.action-buttons-container-modern-layout {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.view-button-primary-action {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.view-button-primary-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+.prescription-button-secondary-action {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.prescription-button-secondary-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(240, 147, 251, 0.4);
+    color: white;
+}
+
+/* Modal styles */
+.prescription-management-modal .ant-modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 16px 64px rgba(0, 0, 0, 0.15);
+}
+
+.prescription-management-modal .ant-modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-bottom: none;
+    padding: 20px 24px;
+}
+
+.modal-header-prescription-tracker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+}
+
+.header-icon-medication-tracker {
+    font-size: 24px;
+    color: #ffd700;
+}
+
+.header-title-prescription-manager {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+}
+
+.prescription-container-advanced-management {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    max-height: 70vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #667eea #f5f7fa;
+}
+
+
+/* Medication card styles */
+.medication-card-interactive-tracker {
+    margin-bottom: 20px;
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.medication-card-interactive-tracker:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+}
+
+.medication-card-interactive-tracker .ant-card-head {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-bottom: none;
+    border-radius: 16px 16px 0 0;
+    padding: 16px 24px;
+}
+
+.medication-card-interactive-tracker .ant-card-head-title {
+    color: white;
+    font-weight: 600;
+    padding: 0;
+}
+
+.medication-header-comprehensive-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.medication-name-styled-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.prescription-management-modal .ant-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px !important;
+    inset-inline-end: 12px;
+    font-size: 20px !important;
+    z-index: 1010;
+    padding: 0;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    background: transparent;
+    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.prescription-management-modal .ant-modal-header {
+    color: rgba(0, 0, 0, 0.88);
+    background: #ffffff;
+    border-radius: 8px 8px 0 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin-bottom: 5px;
+    padding: 15px 24px;
+    border-bottom: none;
+}
+
+.prescription-management-modal .ant-modal-content {
+    position: relative;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 0;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+    pointer-events: auto;
+    padding: 0 !important;
+}
+
+.dosage-badge-circular-indicator {
+    transform: scale(1.2);
+    margin-left: 4px;
+}
+
+:where(.css-dev-only-do-not-override-mc1tut).ant-progress .ant-progress-text {
+    display: inline-block;
+    margin-inline-start: 8px;
+    color: #ffffffe0 !important;
+    line-height: 1;
+    width: 2em;
+    white-space: nowrap;
+    text-align: start;
+    vertical-align: middle;
+    word-break: normal;
+}
+
+.medication-title-prominent-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.medication-stats-summary-panel {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.duration-info-compact-display {
+    color: #ffd700;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.medication-progress-visual-indicator {
+    min-width: 120px;
+}
+
+.medication-completion-status-display {
+    font-size: 24px;
+}
+
+.completion-icon-success-indicator {
+    color: #52c41a;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.pending-icon-warning-indicator {
+    color: #faad14;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Description styles */
+.medication-description-informative-text {
+    padding: 16px 0;
+}
+
+.description-content-readable-format {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.section-divider-visual-separator {
+    margin: 16px 0;
+    background: linear-gradient(90deg, transparent, #667eea, transparent);
+    height: 2px;
+    border: none;
+}
+
+/* Daily tracking styles */
+.daily-tracking-comprehensive-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.day-section-organized-container {
+    background: linear-gradient(135deg, #f8f9ff 0%, #e8f4f8 100%);
+    border-radius: 12px;
+    padding: 16px;
+    border: 2px solid #e8f4f8;
+    transition: all 0.3s ease;
+}
+
+.day-section-organized-container:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+.day-header-informative-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.day-number-prominent-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.day-badge-circular-design {
+    transform: scale(1.1);
+}
+
+.day-label-descriptive-text {
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+}
+
+.day-progress-visual-tracker {
+    min-width: 100px;
+    flex: 1;
+}
+
+/* Doses grid styles */
+.doses-grid-interactive-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.dose-item-interactive-checkbox {
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    border: 2px solid #e8f4f8;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.dose-item-interactive-checkbox:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
+}
+
+.dose-completed-visual-state {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border-color: #52c41a;
+}
+
+.dose-pending-visual-state {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-color: #faad14;
+}
+
+.dose-checkbox-styled-control {
+    width: 100%;
+}
+
+.dose-checkbox-styled-control .ant-checkbox {
+    transform: scale(1.2);
+}
+
+.dose-info-comprehensive-details {
+    margin-left: 8px;
+}
+
+.dose-number-identifier-text {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.dose-status-descriptive-label {
+    font-size: 12px;
+}
+
+.status-completed-success-text {
+    color: #55ff00;
+    font-weight: 600;
+}
+
+.status-pending-warning-text {
+    color: #faad14;
+    font-weight: 600;
+}
+
+/* In MarkServices.css */
+.dose-button-styled-control {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    padding: 8px;
+}
+
+.dose-info-comprehensive-details {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Modal footer styles */
+.modal-footer-action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e8f4f8 100%);
+    border-top: 1px solid #e8f4f8;
+}
+
+.save-button-prominent-action {
+    background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    height: 40px;
+    padding: 0 24px;
+    transition: all 0.3s ease;
+}
+
+.save-button-prominent-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(82, 196, 26, 0.4);
+}
+
+.cancel-button-secondary-action {
+    border: 2px solid #667eea;
+    color: #667eea;
+    background: white;
+    border-radius: 8px;
+    font-weight: 600;
+    height: 40px;
+    padding: 0 24px;
+    transition: all 0.3s ease;
+}
+
+.cancel-button-secondary-action:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .medication-header-comprehensive-display {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .medication-stats-summary-panel {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .day-header-informative-display {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .day-progress-visual-tracker {
+        width: 100%;
+    }
+
+    .doses-grid-interactive-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-footer-action-buttons {
+        flex-direction: column;
+    }
+
+    .save-button-prominent-action,
+    .cancel-button-secondary-action {
+        width: 100%;
+    }
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.medication-card-interactive-tracker {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.dose-item-interactive-checkbox {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+/* Custom scrollbar for better UX */
+.ant-modal-body {
+    scrollbar-width: thin;
+    scrollbar-color: #667eea #f5f7fa;
+}
+
+.ant-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.ant-modal-body::-webkit-scrollbar-track {
+    background: #f5f7fa;
+    border-radius: 10px;
+}
+
+.ant-modal-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+}
+
+/* Loading animation */
+.medication-card-interactive-tracker::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.medication-card-interactive-tracker:hover::before {
+    left: 100%;
+}

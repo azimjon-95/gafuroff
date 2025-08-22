@@ -1,0 +1,13 @@
+.a4-reabilitation-sheet {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
+  font-size: 16px;
+  background: #fff;
+}
+@media print {
+  .a4-reabilitation-sheet {
+    box-shadow: none;
+    margin: 0;
+  }
+}

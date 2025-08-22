@@ -1,0 +1,24 @@
+.container_TextInfo {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.container_TextInfo h2 {
+    color: #2c3e50;
+}
+
+.container_TextInfo h3 {
+    color: #16a085;
+    margin-top: 20px;
+}
+
+.container_TextInfo ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+.container_TextInfo li {
+    margin-bottom: 10px;
+}

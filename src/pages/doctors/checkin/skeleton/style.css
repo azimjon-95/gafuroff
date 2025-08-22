@@ -1,0 +1,87 @@
+/* Skeleton Loading Styles */
+.skeleton-shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-back-btn {
+    width: 100px;
+    height: 40px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.skeleton-text-large {
+    width: 200px;
+    height: 24px;
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-text-small {
+    width: 100px;
+    height: 16px;
+}
+
+.skeleton-label {
+    width: 60px;
+    height: 14px;
+    margin-bottom: 0.25rem;
+}
+
+.skeleton-text {
+    width: 120px;
+    height: 16px;
+}
+
+.skeleton-title {
+    width: 150px;
+    height: 20px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-upload {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.skeleton-button {
+    width: 150px;
+    height: 40px;
+    margin: 0.5rem;
+}
+
+.skeleton-button-large {
+    width: 200px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.skeleton-textarea {
+    width: 100%;
+    height: 80px;
+    margin-bottom: 1rem;
+}

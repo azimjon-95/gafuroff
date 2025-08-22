@@ -1,0 +1,297 @@
+/* Laboratory Analysis Component Styles */
+.BioKimyoviy {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin: 20px 0;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Custom Tabs Styling */
+.BioKimyoviy .ant-tabs-nav {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  margin: 0;
+  padding: 6px 20px;
+  border-radius: 12px 12px 0 0;
+}
+
+.BioKimyoviy .ant-tabs-nav::before {
+  border: none;
+}
+
+.BioKimyoviy .ant-tabs-tab {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 7px 24px;
+  margin: 2px 4px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.BioKimyoviy .ant-tabs-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.BioKimyoviy .ant-tabs-tab-active {
+  background: #ffffff;
+  color: #667eea !important;
+  font-weight: 600;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.BioKimyoviy .ant-tabs-ink-bar {
+  display: none;
+}
+
+.BioKimyoviy .ant-tabs-content-holder {
+  background: #ffffff;
+  padding: 0;
+}
+
+.BioKimyoviy .ant-tabs-tabpane {
+  padding: 24px;
+}
+
+/* Action Buttons */
+.BtnPrimary {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  transition: all 0.3s ease;
+}
+
+.BtnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+  background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
+}
+
+/* Analysis Table */
+.tableAnalis {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  font-size: 14px;
+}
+
+.tableAnalis thead {
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8edff 100%);
+}
+
+.tableAnalis th {
+  padding: 18px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #e3f2fd;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tableAnalis th:first-child {
+  width: 35%;
+  padding-left: 24px;
+}
+
+.tableAnalis th:nth-child(2) {
+  width: 25%;
+}
+
+.tableAnalis th:nth-child(3) {
+  width: 25%;
+}
+
+.tableAnalis th:nth-child(4) {
+  width: 15%;
+}
+
+.tableAnalis tbody tr {
+  transition: all 0.2s ease;
+  border: 1px solid #1f5080 !important;
+}
+
+.tableAnalis tbody tr:hover {
+  background: linear-gradient(135deg, #f8fbff 0%, #f0f7ff 100%);
+  transform: scale(1.001);
+}
+
+.tableAnalis td {
+  padding: 5px 16px;
+  vertical-align: middle;
+  color: #34495e;
+  line-height: 1.5;
+}
+
+.tableAnalis td:first-child {
+  font-weight: 500;
+  color: #2c3e50;
+  padding-left: 24px;
+}
+
+/* Result Input Field */
+.resInp {
+  width: 100%;
+  padding: 8px 16px;
+  border: 2px solid #e8f4fd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c3e50;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.resInp:focus {
+  border-color: #667eea;
+  background: #fafbff;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  transform: translateY(-1px);
+}
+
+.resInp:hover {
+  border-color: #b3c6f2;
+  background: #fafbff;
+}
+
+.resInp::placeholder {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Normal Range Values */
+.tableAnalis td:nth-child(3) {
+  color: #16a085;
+  font-weight: 500;
+  font-family: 'Courier New', monospace;
+}
+
+/* Unit Values */
+.tableAnalis td:nth-child(4) {
+  color: #7f8c8d;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Success state for completed fields */
+.resInp.completed {
+  border-color: #4CAF50;
+  background: #f8fff9;
+}
+
+.resInp.completed:focus {
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .BioKimyoviy {
+    margin: 16px;
+  }
+
+  .tableAnalis th:first-child {
+    width: 30%;
+  }
+
+  .tableAnalis th:nth-child(2) {
+    width: 30%;
+  }
+
+  .tableAnalis th:nth-child(3) {
+    width: 25%;
+  }
+
+  .tableAnalis th:nth-child(4) {
+    width: 15%;
+  }
+}
+
+@media (max-width: 768px) {
+  .BioKimyoviy {
+    margin: 12px;
+    border-radius: 8px;
+  }
+
+  .BioKimyoviy .ant-tabs-tabpane {
+    padding: 16px;
+  }
+
+  .tableAnalis {
+    font-size: 13px;
+  }
+
+  .tableAnalis th,
+  .tableAnalis td {
+    padding: 12px 8px;
+  }
+
+  .tableAnalis th:first-child,
+  .tableAnalis td:first-child {
+    padding-left: 12px;
+  }
+
+  .resInp {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .BioKimyoviy .ant-tabs-tab {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .tableAnalis th,
+  .tableAnalis td {
+    padding: 10px 6px;
+  }
+
+  .tableAnalis {
+    font-size: 12px;
+  }
+
+  .resInp {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+/* Print styles */
+@media print {
+
+  .BioKimyoviy .ant-tabs-nav,
+  .BtnPrimary {
+    display: none !important;
+  }
+
+  .tableAnalis {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+
+  .tableAnalis th,
+  .tableAnalis td {
+    border: 1px solid #000;
+    padding: 8px;
+  }
+
+  .resInp {
+    border: none;
+    background: transparent;
+    font-weight: bold;
+  }
+}

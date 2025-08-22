@@ -1,0 +1,28 @@
+.hospital-table-container {
+  background-color: #0f172a !important;
+  /* Ant Design Tabs headerga stil beramiz */
+  .ant-tabs-tab {
+    background-color: #0f172a !important;
+    color: #fff !important;
+    border-radius: 4px 4px 0 0;
+    padding: 8px 16px;
+  }
+
+  /* Active tab (tanlangan) */
+  .ant-tabs-tab-active {
+    background-color: #0f172a !important;
+    color: #fff !important;
+  }
+
+  /* Tablar orasidagi separator chizig'ini yashirish */
+  .ant-tabs-nav::before {
+    border-bottom: none !important;
+  }
+
+  /* Fokusda (bosilgan) bo'lsa ham rang o'zgarmasligi uchun */
+  .ant-tabs-tab:focus,
+  .ant-tabs-tab:hover {
+    background-color: #0f172a !important;
+    color: #fff !important;
+  }
+}

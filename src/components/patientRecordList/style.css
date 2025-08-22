@@ -1,0 +1,607 @@
+:root {
+  --primary-medical-blue: #1e3a8a;
+  --secondary-medical-teal: #0f766e;
+  --accent-gold: #d97706;
+  --text-dark: #1f2937;
+  --text-light: #6b7280;
+  --border-elegant: #e5e7eb;
+  --background-subtle: #f8fafc;
+  --shadow-professional: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --gradient-medical: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
+  --gradient-gold: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+}
+
+
+.prescription-document-masterpiece {
+  width: 210mm;
+  height: 297mm;
+  margin: 10px auto;
+  padding: 25px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid var(--border-elegant);
+  border-radius: 12px;
+  box-shadow: var(--shadow-professional);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+/* Decorative Corner Elements */
+.ornamental-corner-topleft,
+.ornamental-corner-topright,
+.ornamental-corner-bottomleft,
+.ornamental-corner-bottomright {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: var(--gradient-medical);
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.ornamental-corner-topleft {
+  top: 0;
+  left: 0;
+  border-radius: 0 0 100% 0;
+}
+
+.ornamental-corner-topright {
+  top: 0;
+  right: 0;
+  border-radius: 0 0 0 100%;
+}
+
+.ornamental-corner-bottomleft {
+  bottom: 0;
+  left: 0;
+  border-radius: 0 100% 0 0;
+}
+
+.ornamental-corner-bottomright {
+  bottom: 0;
+  right: 0;
+  border-radius: 100% 0 0 0;
+}
+
+/* Watermark Background */
+.watermark-medical-backdrop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.03;
+  z-index: 0;
+  font-size: 400px;
+}
+
+
+/* Header Section */
+.header-institutional-prestigious {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 3px solid var(--secondary-medical-teal);
+  background-size: 100% 3px;
+  background-repeat: no-repeat;
+  height: 130px;
+  min-height: 130px;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.ministry-information-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.government-seal-container {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-medical);
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.uzbekistan-emblem-stylized {
+  font-size: 24px;
+  color: #fff;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.official-text-hierarchy p {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-medical-blue);
+  line-height: 1.4;
+  margin: 1px 0;
+}
+
+.republic-title-primary {
+  font-size: 13px !important;
+  color: var(--text-dark) !important;
+}
+
+.central-logo-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 200px;
+}
+
+.central-logo-magnificent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -97px !important;
+  position: relative;
+  background: transparent !important;
+  z-index: 999 !important;
+
+}
+
+
+
+.institution-name-elegant {
+  text-align: center;
+}
+
+.medical-center-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--primary-medical-blue);
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.clinic-information-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.address-contact-wrapper {
+  text-align: right;
+  max-width: 300px;
+}
+
+.clinic-address-formatted {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.location-marker {
+  font-size: 16px;
+}
+
+.address-text-professional {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1.4;
+  margin-top: -2px;
+}
+
+.contact-phone-styled {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.phone-icon {
+  font-size: 16px;
+}
+
+.phone-number-formatted {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--secondary-medical-teal);
+}
+
+/* Title Section */
+.prescription-title-majestic {
+  text-align: center;
+  margin: 10px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.document-heading-primary {
+  font-size: 26px;
+  font-weight: 900;
+  color: transparent;
+  color: #1e3a8a;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-title-pashxis {
+  font-size: 15px;
+  font-weight: 900;
+  color: transparent;
+  color: #0f766e;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title-underline-decorative {
+  width: 150px;
+  height: 4px;
+  background: var(--gradient-gold);
+  margin: 0 auto;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Patient Information */
+.patient-data-comprehensive {
+  background: var(--background-subtle);
+  padding: 8px 25px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border-elegant);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 2;
+}
+
+.information-grid-sophisticated {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.data-field-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.field-label-professional {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary-medical-blue);
+  white-space: nowrap;
+}
+
+.field-value-underlined {
+  /* flex: 1; */
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+  border-bottom: 2px solid var(--primary-medical-blue);
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 4px 4px 0 0;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+}
+
+.diagnosis-highlight {
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+  border-bottom-color: var(--accent-gold);
+  font-weight: 700;
+}
+
+/* Recommendations Section */
+.medical-recommendations-detailed {
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 2;
+}
+
+.recommendations-header-stylized {
+  margin-bottom: 0px;
+  text-align: center;
+}
+
+.section-title-prominent {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--primary-medical-blue);
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 10px;
+}
+
+.header-accent-line {
+  width: 100px;
+  height: 3px;
+  background: var(--gradient-gold);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+.prescription-lines-containerone {
+  background: rgb(255, 255, 255);
+  border-radius: 12px;
+  padding: 5px 20px;
+  border: 1px solid var(--border-elegant);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.prescription-lines-container {
+  background: rgb(255, 255, 255);
+  border-radius: 12px;
+  padding: 10px 20px;
+  min-height: 450px;
+  border: 1px solid var(--border-elegant);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.prescription-item {
+  border-bottom: 1px solid #dddddd66;
+}
+
+.prescription-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.prescription-line h4 {
+  width: 65%;
+}
+
+.prescription-item:last-child {
+  border-bottom: none;
+}
+
+.prescription-item h4 {
+  /* margin: 0 0 6px; */
+  color: #2980b9;
+}
+
+.prescription-item p {
+  font-size: 12px;
+  color: #333;
+}
+
+.prescription-instruction-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 5px;
+  padding: 4px;
+  background: var(--background-subtle);
+  border-radius: 8px;
+  border-left: 2px solid var(--secondary-medical-teal);
+  transition: all 0.3s ease;
+}
+
+.prescription-instruction-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.prescription-instruction-item:last-child {
+  margin-bottom: 0;
+}
+
+.instruction-number-badge {
+  width: 35px;
+  height: 35px;
+  background: var(--gradient-medical);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.instruction-text-content {
+  flex: 1;
+}
+
+.recommendation-text-styled {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Doctor Information Footer */
+.physician-signature-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 10px;
+  padding: 10px 25px;
+  background: var(--background-subtle);
+  border-radius: 12px;
+  border: 1px solid var(--border-elegant);
+  position: relative;
+  z-index: 2;
+}
+
+.doctor-credentials-left {
+  flex: 1;
+}
+
+.doctor-info-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: white;
+  padding: 6px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-elegant);
+}
+
+.doctor-avatar-placeholder {
+  width: 60px;
+  height: 60px;
+  background: var(--gradient-medical);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.doctor-specialization {
+  font-size: 12px;
+  color: var(--text-light);
+  font-weight: 600;
+  padding: 0;
+  margin: 0 !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.doctor-name-prominent {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary-medical-blue);
+}
+
+.doctor-contact-info {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--secondary-medical-teal);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.signature-space-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.signature-line-elegant {
+  text-align: center;
+}
+
+.signature-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+.signature-placeholder-line {
+  width: 200px;
+  height: 2px;
+  background: var(--primary-medical-blue);
+  margin: 0 auto;
+  border-radius: 1px;
+}
+
+/* Footer Notice */
+.prescription-footer-notice {
+  text-align: center;
+  padding: 7px 20px;
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+  border-radius: 8px;
+  border: 1px solid var(--accent-gold);
+  position: relative;
+  z-index: 2;
+}
+
+.validity-notice {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Print Styles */
+@media print {
+  .prescription-document-masterpiece {
+    margin: 0;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+  }
+
+  .ornamental-corner-topleft,
+  .ornamental-corner-topright,
+  .ornamental-corner-bottomleft,
+  .ornamental-corner-bottomright {
+    display: none;
+  }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .prescription-document-masterpiece {
+    width: 100%;
+    margin: 5px;
+    padding: 15px;
+  }
+
+  .header-institutional-prestigious {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .ministry-information-left,
+  .clinic-information-right {
+    justify-content: center;
+  }
+
+  .information-grid-sophisticated {
+    grid-template-columns: 1fr;
+  }
+
+  .physician-signature-section {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .doctor-info-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* Animation for medical elements */
+@keyframes pulse-medical {
+
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.serpent-animation-flow {
+  animation: pulse-medical 3s ease-in-out infinite;
+}
+
+.serpent-animation-flow-reverse {
+  animation: pulse-medical 3s ease-in-out infinite reverse;
+}

@@ -1,0 +1,919 @@
+/* Medical Table Styles - Responsive & Modern */
+
+/* Container */
+.hospital-table-container {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  position: relative;
+}
+
+.hospital-table-container .ant-tabs-tab-btn {
+  color: #fff !important;
+  font-weight: bold !important;
+  margin-left: 15px;
+}
+
+/* Header */
+.hospital-header {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  padding: 1.5rem 2rem;
+  border-bottom: 3px solid #1e40af;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
+}
+
+.hospital-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.hospital-main-icon {
+  font-size: 2.5rem;
+  color: #ffffff;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.hospital-header h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hospital-stats {
+  margin-left: auto;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  color: #ffffff;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-item svg {
+  font-size: 1.25rem;
+}
+
+/* Loading */
+.hospital-loading-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  background: #f8fafc;
+}
+
+.hospital-loading-spinner {
+  text-align: center;
+  padding: 3rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.hospital-loading-icon {
+  font-size: 3rem;
+  color: #2563eb;
+  animation: pulse 2s infinite;
+  margin-bottom: 1rem;
+}
+
+.hospital-loading-spinner p {
+  color: #64748b;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Table Wrapper */
+.hospital-table-wrapper {
+  overflow-x: auto;
+  overflow-y: auto;
+  background: #ffffff;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+/* Table */
+.hospital-rooms-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  min-width: 1200px;
+}
+
+/* Table Header */
+.hospital-table-header {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.hospital-table-header th {
+  padding: 1.25rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #ffffff;
+  border-bottom: 2px solid #1d4ed8;
+  font-size: 0.95rem;
+  letter-spacing: -0.025em;
+}
+
+.hospital-table-header th svg {
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+
+/* Table Body */
+.hospital-table-body {
+  background: #ffffff;
+}
+
+.hospital-room-row {
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Table Cells */
+.hospital-room-row td {
+  padding: 0.5rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Room Number Cell */
+.room-number-cell {
+  width: 120px;
+}
+
+.room-door-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 60px;
+}
+
+.room-door-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.room-number-badge {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffffff;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+/* Floor Cell */
+.floor-cell {
+  width: 120px;
+}
+
+.floor-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.floor-icon {
+  font-size: 1.5rem;
+  color: #64748b;
+}
+
+.floor-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.floor-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.floor-number {
+  font-weight: 600;
+  color: #999999;
+  font-size: 1rem;
+}
+
+/* Capacity Cell */
+.capacity-cell {
+  width: 150px;
+}
+
+.capacity-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bed-status-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.bed-status-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.capacity-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #909090;
+  font-weight: 500;
+}
+
+.capacity-icon {
+  font-size: 1.25rem;
+  color: #2563eb;
+}
+
+/* Patients Cell */
+.patients-cell {
+  width: 160px;
+}
+
+.patients-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.patients-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.room-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.empty-room {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.busy-room {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.occupied-room {
+  background: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fde68a;
+}
+
+/* Price Cell */
+.price-cell {
+  width: 180px;
+}
+
+.price-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.price-category {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.price-amount {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #059669;
+  font-size: 1rem;
+}
+
+.price-icon {
+  font-size: 1.25rem;
+}
+
+/* Supervision Cell */
+.supervision-cell {
+  width: 200px;
+}
+
+.supervision-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.staff-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.nurse-info {
+  border-left: 3px solid #8b5cf6;
+}
+
+.cleaner-info {
+  border-left: 3px solid #06b6d4;
+}
+
+.no-staff {
+  border-left: 3px solid #94a3b8;
+  opacity: 0.7;
+}
+
+.staff-icon {
+  font-size: 1.25rem;
+  color: #475569;
+}
+
+.staff-icon.inactive {
+  color: #94a3b8;
+}
+
+.staff-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.staff-role {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.staff-name {
+  font-size: 0.85rem;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* Actions Cell */
+.actions-cell {
+  width: 120px;
+}
+
+.room-view-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.room-view-button:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  color: #ffffff;
+}
+
+.room-view-button.disabled {
+  background: #94a3b8;
+  color: #ffffff;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.view-icon {
+  font-size: 1rem;
+}
+
+/* No Rooms Message */
+.no-rooms-message {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #64748b;
+}
+
+.no-rooms-icon {
+  font-size: 4rem;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+}
+
+.no-rooms-message h3 {
+  font-size: 1.5rem;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.no-rooms-message p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Responsive Design */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .hospital-header {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .hospital-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .hospital-main-icon {
+    font-size: 2rem;
+  }
+
+  .hospital-rooms-table {
+    min-width: 1000px;
+  }
+
+  .hospital-table-header th {
+    padding: 1rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .hospital-room-row td {
+    padding: 1rem 0.75rem;
+  }
+
+  .stat-item {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hospital-header {
+    padding: 1rem;
+  }
+
+  .hospital-header-content {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .hospital-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .hospital-main-icon {
+    font-size: 1.75rem;
+  }
+
+  .hospital-stats {
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .hospital-table-wrapper {
+    margin: 1rem;
+    border-radius: 12px;
+  }
+
+  .hospital-rooms-table {
+    min-width: 800px;
+    font-size: 0.8rem;
+  }
+
+  .hospital-table-header th {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .hospital-room-row td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  /* Reduce cell widths for mobile */
+  .room-number-cell {
+    width: 80px;
+  }
+
+  .floor-cell {
+    width: 90px;
+  }
+
+  .capacity-cell {
+    width: 120px;
+  }
+
+  .patients-cell {
+    width: 130px;
+  }
+
+  .price-cell {
+    width: 140px;
+  }
+
+  .supervision-cell {
+    width: 160px;
+  }
+
+  .actions-cell {
+    width: 100px;
+  }
+
+  .room-door-container {
+    width: 40px;
+    height: 50px;
+  }
+
+  .room-number-badge {
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    top: 10px;
+  }
+
+  .floor-icon {
+    font-size: 1.25rem;
+  }
+
+  .capacity-icon {
+    font-size: 1.1rem;
+  }
+
+  .bed-status-indicator {
+    width: 12px;
+    height: 12px;
+  }
+
+  .room-status {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .price-amount {
+    font-size: 0.85rem;
+  }
+
+  .staff-info {
+    padding: 0.375rem;
+  }
+
+  .staff-icon {
+    font-size: 1.1rem;
+  }
+
+  .staff-name {
+    font-size: 0.8rem;
+  }
+
+  .room-view-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .view-icon {
+    font-size: 0.9rem;
+  }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 480px) {
+  .hospital-header {
+    padding: 0.75rem;
+  }
+
+  .hospital-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .hospital-main-icon {
+    font-size: 1.5rem;
+  }
+
+  .stat-item {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .hospital-table-wrapper {
+    margin: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .hospital-rooms-table {
+    min-width: 700px;
+    font-size: 0.75rem;
+  }
+
+  .hospital-table-header th {
+    padding: 0.5rem 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .hospital-room-row td {
+    padding: 0.5rem 0.375rem;
+  }
+
+  /* Further reduce cell widths */
+  .room-number-cell {
+    width: 70px;
+  }
+
+  .floor-cell {
+    width: 80px;
+  }
+
+  .capacity-cell {
+    width: 100px;
+  }
+
+  .patients-cell {
+    width: 110px;
+  }
+
+  .price-cell {
+    width: 120px;
+  }
+
+  .supervision-cell {
+    width: 140px;
+  }
+
+  .actions-cell {
+    width: 80px;
+  }
+
+  .room-door-container {
+    width: 35px;
+    height: 45px;
+  }
+
+  .room-number-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 0.65rem;
+    top: 8px;
+  }
+
+  .bed-status-indicator {
+    width: 10px;
+    height: 10px;
+  }
+
+  .room-status {
+    padding: 0.25rem 0.375rem;
+    font-size: 0.7rem;
+  }
+
+  .staff-info {
+    padding: 0.25rem;
+    gap: 0.5rem;
+  }
+
+  .staff-details {
+    gap: 0.125rem;
+  }
+
+  .staff-role {
+    font-size: 0.65rem;
+  }
+
+  .staff-name {
+    font-size: 0.75rem;
+  }
+
+  .room-view-button {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+    gap: 0.375rem;
+  }
+
+  .view-icon {
+    font-size: 0.8rem;
+  }
+
+  .no-rooms-message {
+    padding: 2rem 1rem;
+  }
+
+  .no-rooms-icon {
+    font-size: 3rem;
+  }
+
+  .no-rooms-message h3 {
+    font-size: 1.25rem;
+  }
+
+  .no-rooms-message p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Dark mode hover effects */
+@media (prefers-color-scheme: dark) {
+  .hospital-table-container {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
+
+  .hospital-table-wrapper {
+    background: #1e293b;
+    border-color: #334155;
+  }
+
+  .hospital-rooms-table {
+    color: #e2e8f0;
+  }
+
+  .even-row {
+    background: #1e293b;
+  }
+
+  .odd-row {
+    background: #334155;
+  }
+
+  .hospital-room-row:hover {
+    background: linear-gradient(135deg, #334155 0%, #475569 100%);
+  }
+}
+
+/* Print styles */
+@media print {
+  .hospital-header {
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+  }
+
+  .hospital-header h2,
+  .hospital-main-icon {
+    color: #000000 !important;
+  }
+
+  .hospital-table-header {
+    background: #f8fafc !important;
+  }
+
+  .hospital-table-header th {
+    color: #000000 !important;
+  }
+
+  .room-view-button {
+    display: none !important;
+  }
+
+  .actions-cell {
+    display: none !important;
+  }
+
+  .hospital-table-header th:last-child {
+    display: none !important;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .hospital-room-row,
+  .room-view-button,
+  .bed-status-indicator {
+    transition: none;
+  }
+
+  .hospital-loading-icon {
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .hospital-table-wrapper {
+    border: 2px solid #000000;
+  }
+
+  .hospital-room-row {
+    border-bottom: 2px solid #000000;
+  }
+
+  .hospital-table-header th {
+    border-bottom: 3px solid #000000;
+  }
+
+  .room-status {
+    border: 2px solid currentColor;
+  }
+
+  .staff-info {
+    border: 2px solid #000000;
+  }
+}
+
+/* Focus states for accessibility */
+.room-view-button:focus {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.hospital-table-header th:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: -2px;
+}
+
+/* Smooth scrolling */
+.hospital-table-wrapper {
+  scroll-behavior: smooth;
+}
+
+/* Selection styles */
+::selection {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+/* Custom scrollbar */
+.hospital-table-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.hospital-table-wrapper::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.hospital-table-wrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.hospital-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

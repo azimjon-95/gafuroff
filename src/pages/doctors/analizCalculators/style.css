@@ -1,0 +1,472 @@
+/* Medical Laboratory Sidebar - Creative Design */
+
+/* Main container for the medical calculation layout */
+.medicalLabCalculationContainer {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Laboratory sidebar wrapper */
+.medicalLabSidebarWrapper {
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+    border-right: 3px solid #e1e7ef;
+    box-shadow:
+        0 10px 25px rgba(59, 130, 246, 0.08),
+        0 4px 10px rgba(0, 0, 0, 0.02);
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.medicalLabSidebarWrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 50%, #10b981 100%);
+    z-index: 10;
+}
+
+/* Medical equipment pattern overlay */
+.medicalLabSidebarWrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Laboratory menu container */
+.laboratoryMenuContainer {
+    position: relative;
+    z-index: 2;
+    padding: 0;
+    margin: 0;
+    max-height: 85vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+}
+
+/* Custom scrollbar styling */
+.laboratoryMenuContainer::-webkit-scrollbar {
+    width: 6px;
+}
+
+.laboratoryMenuContainer::-webkit-scrollbar-track {
+    background: rgba(241, 245, 249, 0.5);
+    border-radius: 10px;
+}
+
+.laboratoryMenuContainer::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #3b82f6 0%, #06b6d4 100%);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.laboratoryMenuContainer::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #2563eb 0%, #0891b2 100%);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+/* Medical section headers */
+.medicalSectionHeader {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    margin: 8px 12px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    border-left: 4px solid;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.medicalSectionHeader::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.medicalSectionHeader:hover::before {
+    left: 100%;
+}
+
+/* Different colors for different medical sections */
+.bloodChemistrySection {
+    border-left-color: #ef4444;
+}
+
+.bloodChemistrySection:hover {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    transform: translateX(4px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.15);
+}
+
+.generalBloodSection {
+    border-left-color: #3b82f6;
+}
+
+.generalBloodSection:hover {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    transform: translateX(4px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+}
+
+.urinalysisSection {
+    border-left-color: #06b6d4;
+}
+
+.urinalysisSection:hover {
+    background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+    transform: translateX(4px);
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.15);
+}
+
+.stoolAnalysisSection {
+    border-left-color: #10b981;
+}
+
+.stoolAnalysisSection:hover {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    transform: translateX(4px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.15);
+}
+
+/* Medical section icons */
+.medicalSectionIcon {
+    font-size: 22px;
+    margin-right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.bloodChemistrySection .medicalSectionIcon {
+    color: #ef4444;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.generalBloodSection .medicalSectionIcon {
+    color: #3b82f6;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.urinalysisSection .medicalSectionIcon {
+    color: #06b6d4;
+    background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+}
+
+.stoolAnalysisSection .medicalSectionIcon {
+    color: #10b981;
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+}
+
+/* Medical section title text */
+.medicalSectionTitle {
+    font-weight: 600;
+    font-size: 15px;
+    color: #1e293b;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Medical calculator items container */
+.medicalCalculatorItemsContainer {
+    margin-left: 8px;
+    border-left: 2px solid #f1f5f9;
+    position: relative;
+}
+
+.medicalCalculatorItemsContainer::before {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, transparent 0%, #e2e8f0 50%, transparent 100%);
+}
+
+/* Individual calculator items */
+.medicalCalculatorItem {
+    padding: 12px 16px 12px 24px;
+    margin: 4px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid transparent;
+    overflow: hidden;
+}
+
+.medicalCalculatorItem::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: #cbd5e1;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.medicalCalculatorItem:hover::before {
+    background: #3b82f6;
+    transform: translateY(-50%) scale(1.5);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
+.medicalCalculatorItem:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    transform: translateX(6px);
+    border-color: #e2e8f0;
+    box-shadow:
+        0 4px 12px rgba(59, 130, 246, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.medicalCalculatorItem.selectedCalculatorItem {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    transform: translateX(8px);
+    box-shadow:
+        0 6px 20px rgba(59, 130, 246, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.medicalCalculatorItem.selectedCalculatorItem::before {
+    background: #ffffff;
+    transform: translateY(-50%) scale(1.2);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+}
+
+/* Calculator item text */
+.calculatorItemText {
+    font-size: 14px;
+    font-weight: 500;
+    color: #475569;
+    transition: color 0.3s ease;
+    line-height: 1.4;
+}
+
+.medicalCalculatorItem:hover .calculatorItemText {
+    color: #1e293b;
+}
+
+.medicalCalculatorItem.selectedCalculatorItem .calculatorItemText {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Search input container */
+.medicalSearchContainer {
+    padding: 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-bottom: 1px solid #e2e8f0;
+    position: relative;
+}
+
+.medicalSearchContainer::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, #3b82f6 50%, transparent 100%);
+}
+
+/* Resizer handle */
+.sidebarResizeHandle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: ew-resize;
+    background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.1) 50%, transparent 100%);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.sidebarResizeHandle:hover {
+    background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.2) 50%, transparent 100%);
+    width: 12px;
+}
+
+.sidebarResizeHandle::after {
+    content: '';
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 30px;
+    background: linear-gradient(180deg, #3b82f6 0%, #06b6d4 100%);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebarResizeHandle:hover::after {
+    opacity: 1;
+}
+
+/* Main content area */
+.medicalContentArea {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.medicalContentArea::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.02) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.02) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* No results message */
+.noResultsMessage {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+    font-size: 16px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    margin: 20px;
+    border: 2px dashed #cbd5e1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .medicalLabSidebarWrapper {
+        width: 100% !important;
+        max-width: 300px;
+    }
+
+    .medicalSectionHeader {
+        padding: 12px 16px;
+        margin: 6px 8px;
+    }
+
+    .medicalSectionIcon {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+        margin-right: 10px;
+    }
+
+    .medicalSectionTitle {
+        font-size: 14px;
+    }
+
+    .medicalCalculatorItem {
+        padding: 10px 12px 10px 20px;
+        margin: 3px 6px;
+    }
+
+    .calculatorItemText {
+        font-size: 13px;
+    }
+}
+
+/* Animation for section expansion */
+@keyframes expandSection {
+    from {
+        max-height: 0;
+        opacity: 0;
+    }
+
+    to {
+        max-height: 1000px;
+        opacity: 1;
+    }
+}
+
+.medicalCalculatorItemsContainer {
+    animation: expandSection 0.3s ease-out;
+}
+
+/* Pulse animation for active items */
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+    }
+
+    50% {
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.35);
+    }
+}
+
+.medicalCalculatorItem.selectedCalculatorItem {
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Loading state */
+.calculatorLoadingState {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #64748b;
+    font-size: 16px;
+}
+
+.calculatorLoadingState::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e2e8f0;
+    border-top: 2px solid #3b82f6;
+    border-radius: 50%;
+    margin-right: 12px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

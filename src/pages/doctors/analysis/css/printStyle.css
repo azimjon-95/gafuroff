@@ -1,0 +1,374 @@
+/* Print-optimized Laboratory Report Styles */
+
+/* Print media queries */
+@media print {
+    * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
+    .lib-laboratory-report {
+        margin: 0 !important;
+        padding: 15mm !important;
+        box-shadow: none !important;
+    }
+}
+
+/* Main container */
+.lib-laboratory-report {
+    max-width: 210mm;
+    /* A4 width */
+    min-height: 297mm;
+    /* A4 height */
+    margin: 0 auto;
+    padding: 5mm 8mm;
+    background: #ffffff;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    color: #2c2c2c;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    line-height: 1.4;
+}
+
+/* Header Section */
+.lib-report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.lib-clinic-info {
+    flex: 1;
+}
+
+.lib-clinic-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin: 0 0 5px 0;
+    text-transform: uppercase;
+}
+
+.lib-clinic-address,
+.lib-clinic-phone {
+    font-size: 11px;
+    color: #666666;
+    margin: 2px 0;
+}
+
+.lib-lab-title {
+    text-align: right;
+    flex: 1;
+}
+
+.lib-main-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c2c2c;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.lib-lab-subtitle {
+    font-size: 12px;
+    color: #666666;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* Divider */
+.lib-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #cccccc, transparent);
+    margin: 15px 0;
+}
+
+/* Section Headers */
+.lib-section-header {
+    font-size: 13px;
+    font-weight: bold;
+    color: #2c2c2c;
+    margin: 10px 0 10px 0;
+    text-transform: uppercase;
+    border-left: 3px solid #666666;
+    padding-left: 8px;
+}
+
+/* Patient Information */
+.lib-patient-info {
+    margin-bottom: 15px;
+}
+
+.lib-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background: #f8f8f8;
+    padding: 12px;
+    border-radius: 3px;
+    border: 1px solid #e0e0e0;
+}
+
+.lib-info-item {
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+}
+
+.lib-label {
+    font-weight: bold;
+    color: #4a4a4a;
+    min-width: 100px;
+    margin-right: 8px;
+}
+
+.lib-value {
+    color: #2c2c2c;
+    border-bottom: 1px solid #cccccc;
+    min-width: 120px;
+    padding: 1px 0;
+}
+
+/* Doctor Information */
+.lib-doctor-info {
+    margin-bottom: 20px;
+}
+
+.lib-doctor-grid {
+    display: flex;
+    gap: 30px;
+    background: #f8f8f8;
+    padding: 12px;
+    border-radius: 3px;
+    border: 1px solid #e0e0e0;
+}
+
+.lib-doctor-item {
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+}
+
+.lib-signature-line {
+    border-bottom: 1px solid #666666;
+    min-width: 150px;
+    margin-left: 10px;
+    color: #f8f8f800;
+    padding: 1px 0;
+}
+
+/* Analysis Results */
+.lib-analysis-results {
+    margin-bottom: 10px;
+}
+
+.lib-analysis-section {
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+}
+
+.lib-section-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #2c2c2c;
+    margin: 5px 0;
+    padding: 5px 12px;
+    background: #f0f0f0;
+    border-left: 4px solid #666666;
+    text-transform: uppercase;
+}
+
+/* Table Styles */
+.lib-table-container {
+    overflow-x: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+}
+
+.lib-results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+    background: #ffffff;
+}
+
+.lib-table-header th {
+    background: #f5f5f5;
+    color: #2c2c2c;
+    font-weight: bold;
+    padding: 8px 6px;
+    text-align: left;
+    border-bottom: 2px solid #e0e0e0;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.lib-col-number {
+    width: 8%;
+    text-align: center !important;
+}
+
+.lib-col-parameter {
+    width: 35%;
+}
+
+.lib-col-result {
+    width: 20%;
+    text-align: center !important;
+}
+
+.lib-col-norm {
+    width: 22%;
+    text-align: center !important;
+}
+
+.lib-col-unit {
+    width: 15%;
+    text-align: center !important;
+}
+
+.lib-result-row {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.lib-result-row:hover {
+    background: #f9f9f9;
+}
+
+.lib-result-row:nth-child(even) {
+    background: #fafafa;
+}
+
+.lib-result-row td {
+    padding: 4px 6px;
+    vertical-align: middle;
+    border-right: 1px solid #f0f0f0;
+}
+
+.lib-number {
+    text-align: center;
+    font-weight: bold;
+    color: #666666;
+}
+
+.lib-parameter {
+    color: #2c2c2c;
+    font-weight: 500;
+}
+
+.lib-result {
+    text-align: center;
+    color: #1a1a1a;
+    font-weight: bold;
+}
+
+.lib-norm {
+    text-align: center;
+    color: #666666;
+    font-style: italic;
+}
+
+.lib-unit {
+    text-align: center;
+    color: #666666;
+    font-size: 9px;
+}
+
+/* No Data Message */
+.lib-no-data {
+    text-align: center;
+    padding: 20px;
+    color: #999999;
+    font-style: italic;
+    background: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+}
+
+/* Footer */
+.lib-report-footer {
+    margin-top: 30px;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 15px;
+}
+
+.lib-footer-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: #666666;
+}
+
+.lib-footer-note {
+    font-style: italic;
+    margin: 0;
+}
+
+.lib-print-date {
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Print-specific adjustments */
+@media print {
+    .lib-laboratory-report {
+        box-shadow: none !important;
+        margin: 0 !important;
+    }
+
+    .lib-analysis-section {
+        page-break-inside: avoid;
+    }
+
+    .lib-results-table {
+        page-break-inside: auto;
+    }
+
+    .lib-result-row {
+        page-break-inside: avoid;
+    }
+
+    /* Ensure proper color printing */
+    .lib-table-header th {
+        background: #f5f5f5 !important;
+        -webkit-print-color-adjust: exact;
+
+    }
+
+    .lib-result-row:nth-child(even) {
+        background: #fafafa !important;
+        -webkit-print-color-adjust: exact;
+    }
+}
+
+/* Responsive adjustments for smaller screens */
+@media screen and (max-width: 768px) {
+    .lib-laboratory-report {
+        padding: 15mm 10mm;
+        font-size: 90%;
+    }
+
+    .lib-report-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .lib-lab-title {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .lib-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lib-doctor-grid {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .lib-results-table {
+        font-size: 9px;
+    }
+}

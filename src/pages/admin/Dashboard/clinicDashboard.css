@@ -1,0 +1,426 @@
+.complex-root-container {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(to bottom right, #eff6ff, #e0e7ff);
+    overflow-x: auto;
+}
+
+/* Custom scrollbar styles for Webkit browsers (Chrome, Safari) */
+.complex-root-container::-webkit-scrollbar {
+    width: 7px;
+    /* Width of the scrollbar */
+}
+
+.complex-root-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    /* Track background color */
+    border-radius: 6px;
+}
+
+.complex-root-container::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+    /* Scrollbar thumb color (blue-500) */
+    border-radius: 6px;
+    border: 2px solid #f1f5f9;
+    /* Border around thumb for contrast */
+}
+
+.complex-root-container::-webkit-scrollbar-thumb:hover {
+    background: #2563eb;
+    /* Darker blue on hover (blue-600) */
+}
+
+/* Main content wrapper */
+.complex-main-wrapper {
+    width: 100%;
+    margin-left: auto;
+    padding: 10px;
+    margin-right: auto;
+}
+
+/* Header styles */
+.complex-header-section {
+    margin-bottom: 2rem;
+}
+
+.complex-header-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+
+/* Stats cards grid */
+.complex-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .complex-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .complex-stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.complex-stats-card {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: .7rem 1.5rem;
+}
+
+.complex-stats-card-blue {
+    border-left: 4px solid #3b82f6;
+}
+
+.complex-stats-card-green {
+    border-left: 4px solid #10b981;
+}
+
+.complex-stats-card-purple {
+    border-left: 4px solid #8b5cf6;
+}
+
+.complex-stats-card-red {
+    border-left: 4px solid #ef4444;
+}
+
+.complex-stats-card-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.complex-stats-label {
+    color: #4b5563;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.complex-stats-value {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.complex-stats-value-income {
+    font-size: 1.5rem;
+}
+
+.complex-stats-trend-green {
+    color: #10b981;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.complex-stats-trend-red {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.complex-icon-blue {
+    height: 3rem;
+    width: 3rem;
+    color: #3b82f6;
+}
+
+.complex-icon-green {
+    height: 3rem;
+    width: 3rem;
+    color: #10b981;
+}
+
+.complex-icon-purple {
+    height: 3rem;
+    width: 3rem;
+    color: #8b5cf6;
+}
+
+.complex-icon-red {
+    height: 3rem;
+    width: 3rem;
+    color: #ef4444;
+}
+
+/* Profit card */
+.complex-profit-card {
+    background: linear-gradient(to right, #10b981, #059669);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem 2rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.complex-profit-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.complex-profit-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.complex-profit-value {
+    font-size: 2.25rem;
+    font-weight: 700;
+}
+
+.complex-profit-growth {
+    font-size: 1.125rem;
+    margin-top: 0.5rem;
+}
+
+.complex-profit-growth-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.complex-profit-icon {
+    height: 1.25rem;
+    width: 1.25rem;
+    margin-right: 0.25rem;
+}
+
+.complex-profit-dollar-icon {
+    height: 4rem;
+    width: 4rem;
+    opacity: 0.8;
+}
+
+/* Charts grid */
+.complex-charts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    height: 340px;
+    overflow: hidden !important;
+}
+
+@media (min-width: 1024px) {
+    .complex-charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.complex-chart-container {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 1rem;
+}
+
+.complex-chart-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.complex-chart-responsive {
+    width: 100%;
+    height: 270px !important;
+}
+
+/* Debit-Credit table */
+.complex-table-container {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+}
+
+.complex-table-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+}
+
+.complex-table-overflow {
+    width: 100%;
+    height: 420px;
+    overflow-x: auto;
+}
+
+/* Custom scrollbar styles for Webkit browsers (Chrome, Safari) */
+.complex-table-overflow::-webkit-scrollbar {
+    width: 7px;
+}
+
+.complex-table-overflow::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    /* Track background color */
+    border-radius: 6px;
+}
+
+.complex-table-overflow::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+    /* Scrollbar thumb color (blue-500) */
+    border-radius: 6px;
+    border: 2px solid #f1f5f9;
+    /* Border around thumb for contrast */
+}
+
+.complex-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.complex-table-header-row {
+    background-color: #f9fafb;
+}
+
+.complex-table-header-cell {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.complex-table-body {
+    border-top: 1px solid #e5e7eb;
+}
+
+.complex-table-row:hover {
+    background-color: #f9fafb;
+}
+
+.complex-table-cell {
+    padding: 0.45rem 1rem;
+    font-size: 0.875rem;
+    color: #1f2937;
+}
+
+.complex-table-cell-type-debit {
+    display: inline-flex;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.complex-table-cell-type-credit {
+    display: inline-flex;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.complex-table-cell-amount {
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.complex-table-cell-description {
+    color: #4b5563;
+}
+
+.complex-table-cell-category-daromad {
+    display: inline-flex;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.complex-table-cell-category-xarajat {
+    display: inline-flex;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    background-color: #ffedd5;
+    color: #c2410c;
+}
+
+/* Table summary */
+.complex-table-summary {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .complex-table-summary {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.complex-summary-card-debit {
+    background-color: #f0fdf4;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.complex-summary-card-credit {
+    background-color: #fef2f2;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.complex-summary-card-balance {
+    background-color: #eff6ff;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.complex-summary-label-debit {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #15803d;
+}
+
+.complex-summary-label-credit {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #b91c1c;
+}
+
+.complex-summary-label-balance {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1e40af;
+}
+
+.complex-summary-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.complex-summary-value-debit {
+    color: #166534;
+}
+
+.complex-summary-value-credit {
+    color: #991b1b;
+}
+
+.complex-summary-value-balance {
+    color: #1e40af;
+}

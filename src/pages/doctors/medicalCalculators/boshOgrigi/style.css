@@ -1,0 +1,31 @@
+.midas-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.midas-container .ant-typography {
+    text-align: center;
+}
+
+.midas-container .ant-form-item {
+    margin-bottom: 15px;
+}
+
+.midas-container .ant-input-number {
+    width: 100%;
+}
+
+.midas-container .ant-btn-primary {
+    width: 100%;
+}
+
+.midas-container .footer {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #555;
+    text-align: justify;
+}
