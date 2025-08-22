@@ -90,7 +90,7 @@ function RoomServices() {
   ];
 
   return (
-    <div>
+    <div style={{ padding: "15px" }}>
       <ToastContainer />
       <Modal
         title="Edit"

@@ -6,6 +6,22 @@ aside {
   position: relative;
 }
 
+aside::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  /* image bg */
+  background-image: url("../../../public/link.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.1;
+  z-index: 1;
+}
+
 .svgLogo {
   margin-top: -10px;
 }
@@ -76,6 +92,8 @@ aside {
   max-height: 80vh;
   overflow-y: auto;
   padding-right: 5px;
+  position: relative;
+  z-index: 999 !important;
 }
 
 .sidebar_links::-webkit-scrollbar {

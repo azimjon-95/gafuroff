@@ -22,7 +22,8 @@ function Layout() {
     backgroundStyle = "linear-gradient(135deg, #eff6ff, #e0e7ff)";
     paddingStyle = "5px";
   } else if (location.pathname === "/history") {
-    backgroundStyle = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+    backgroundStyle = "linear-gradient(135deg, #eff6ff, #e0e7ff)";
+
     paddingStyle = "5px";
   } else if (location.pathname === "/medical-calculators") {
     backgroundStyle = "inear-gradient(135deg, #667eea 0%, #764ba2 100%)";
@@ -51,7 +52,7 @@ function Layout() {
         <main
           style={{
             background: backgroundStyle,
-            padding: paddingStyle,
+            // padding: paddingStyle,
           }}
           className="main-content"
         >
