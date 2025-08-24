@@ -1,13 +1,19 @@
-import React, { useRef, useState } from 'react';
-import { useGetAllTodaysQuery } from '../../../context/todaysApi';
+import React, { useRef, useState, useMemo } from 'react';
+import { useGetAllTodaysQuery, useDeleteUnconfirmedAppointmentsMutation } from '../../../context/todaysApi';
 import { useUpdateRedirectedPatientMutation } from '../../../context/storyApi';
-import { Table, Spin, Button, Typography, Modal } from 'antd';
-import { PrinterOutlined, WarningOutlined } from '@ant-design/icons';
-import { useReactToPrint } from "react-to-print";
+import { Table, Spin, Button, Typography, Modal, Select, Popconfirm } from 'antd';
+import { PrinterOutlined } from '@ant-design/icons';
+import { MdDeleteSweep } from "react-icons/md";
+import { GiCheckMark } from "react-icons/gi";
+import moment from 'moment';
+import ToastContainer from "./toast/ToastContainer"; // Import custom ToastContainer
+import { useReactToPrint } from 'react-to-print';
 import { capitalizeFirstLetter } from '../../../hook/CapitalizeFirstLitter';
 import ModelCheck from '../../../components/check/modelCheck/ModelCheck';
+import './registration.css'; // Move styles to a separate CSS file
 
 const { Title } = Typography;
+const { Option } = Select;
 
 const NewRegistrations = () => {
     const { data: allStories, isLoading: isLoadingAllStories, refetch } = useGetAllTodaysQuery();
@@ -18,24 +24,46 @@ const NewRegistrations = () => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [selectedPaymentType, setSelectedPaymentType] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [selectedSpecialization, setSelectedSpecialization] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(moment());
+    const [dateError, setDateError] = useState(null); // Added for date input error handling
+    const [dateInput, setDateInput] = useState(moment().format('DD-MM-YYYY'));
+    const [deleteUnconfirmedAppointments, { isLoading: isDeleting }] =
+        useDeleteUnconfirmedAppointmentsMutation();
 
     const reactToPrintFn = useReactToPrint({
         contentRef,
         pageStyle: `
-      @page {
-        size: 80mm auto;
-        margin: 0;
-      }
+      @page { size: 80mm auto; margin: 0; }
       @media print {
         body { margin: 0; }
         * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
       }
-    `
+    `,
     });
 
+    const hasNAValue = useMemo(
+        () => (record) =>
+            !record?.order_number ||
+            !record?.patientId?.firstname ||
+            !record?.patientId?.lastname ||
+            !record?.doctorId?.specialization ||
+            !record?.services?.length ||
+            !record?.payment_amount ||
+            !record?.paymentType ||
+            !record?.createdAt,
+        []
+    );
+
+    const getTotalPrice = useMemo(
+        () => (services) =>
+            services?.length ? services.reduce((total, service) => total + (service.price || 0), 0) : 0,
+        []
+    );
+
     const handleRowPrint = (record) => {
-        if (!record || !record.patientId || !record.doctorId) {
-            console.error('Invalid record:', record);
+        if (!record?.patientId || !record?.doctorId) {
+            setErrorMessage('Noto‘g‘ri ma’lumotlar: Bemor yoki shifokor ma’lumotlari topilmadi.');
             return;
         }
 
@@ -45,7 +73,7 @@ const NewRegistrations = () => {
                     specialization: record.doctorId?.specialization || 'N/A',
                     firstName: record.doctorId?.firstName || 'N/A',
                     lastName: record.doctorId?.lastName || 'N/A',
-                    phone: record.doctorId?.phone || 'N/A'
+                    phone: record.doctorId?.phone || 'N/A',
                 },
                 patient: {
                     firstname: record.patientId?.firstname || 'N/A',
@@ -54,21 +82,19 @@ const NewRegistrations = () => {
                     idNumber: record.patientId?.idNumber || 'N/A',
                     address: record.patientId?.address || 'N/A',
                     paymentType: record.paymentType || 'N/A',
-                    order_number: record.order_number || 0
+                    order_number: record.order_number || 0,
                 },
                 created: record.createdAt || new Date().toISOString(),
-                order_number: record.order_number || 0
+                order_number: record.order_number || 0,
             },
-            services: record.services?.map(service => ({
+            services: record.services?.map((service) => ({
                 name: service.name,
-                price: service.price
-            })) || []
+                price: service.price,
+            })) || [],
         };
 
         setData(story);
-        setTimeout(() => {
-            reactToPrintFn();
-        }, 300);
+        reactToPrintFn();
     };
 
     const handleNAAlert = (record) => {
@@ -87,7 +113,7 @@ const NewRegistrations = () => {
         const data = {
             storyId: selectedRecord?._id,
             paymentType: selectedPaymentType,
-            payment_amount: getTotalPrice(selectedRecord?.services)
+            payment_amount: getTotalPrice(selectedRecord?.services),
         };
 
         try {
@@ -98,34 +124,31 @@ const NewRegistrations = () => {
                         specialization: response?.innerData?.doctor?.specialization || 'N/A',
                         firstName: response?.innerData?.doctor?.firstName || 'N/A',
                         lastName: response?.innerData?.doctor?.lastName || 'N/A',
-                        phone: response?.innerData?.doctor?.phone || 'N/A'
+                        phone: response?.innerData?.doctor?.phone || 'N/A',
                     },
                     patient: {
-                        firstname: response?.innerData?.patient?.firstname || 'N/A',
+                        firstname: response?.innerData?.patient?.tablefirstname || 'N/A',
                         lastname: response?.innerData?.patient?.lastname || 'N/A',
                         phone: response?.innerData?.patient?.phone || 'N/A',
                         idNumber: response?.innerData?.patient?.idNumber || 'N/A',
                         address: response?.innerData?.patient?.address || 'N/A',
                         paymentType: response?.innerData?.paymentType || 'N/A',
-                        order_number: response?.innerData?.patient?.order_number || 0
+                        order_number: response?.innerData?.patient?.order_number || 0,
                     },
                     created: response?.innerData?.createdAt || new Date().toISOString(),
-                    order_number: response?.innerData?.order_number || 0
+                    order_number: response?.innerData?.order_number || 0,
                 },
-                services: response?.innerData?.services?.map(service => ({
+                services: response?.innerData?.services?.map((service) => ({
                     name: service.name,
-                    price: service.price
-                })) || []
+                    price: service.price,
+                })) || [],
             };
 
             setData(story);
-            refetch(); // Refetch the table data
-            setTimeout(() => {
-                reactToPrintFn();
-            }, 300);
+            await refetch();
+            reactToPrintFn();
         } catch (e) {
-            console.error('Update failed:', e);
-            setErrorMessage('To\'lov ma\'lumotlarini yangilashda xatolik yuz berdi.');
+            setErrorMessage('To‘lov ma’lumotlarini yangilashda xatolik yuz berdi.');
             return;
         }
 
@@ -147,156 +170,260 @@ const NewRegistrations = () => {
         setErrorMessage(null);
     };
 
-    // Function to check if a row contains "N/A"
-    const hasNAValue = (record) => {
-        return (
-            !record.order_number ||
-            !record.patientId?.firstname ||
-            !record.patientId?.lastname ||
-            !record.doctorId?.specialization ||
-            !record.services?.length ||
-            !record.payment_amount ||
-            !record.paymentType ||
-            !record.createdAt
-        );
+
+    const handleDateInputChange = (e) => {
+        const value = e.target.value;
+        setDateInput(value);
+
+        const parsedDate = moment(value, 'DD-MM-YYYY', true);
+        if (parsedDate.isValid()) {
+            setSelectedDate(parsedDate);
+        } else if (value === '') {
+            setSelectedDate(null);
+        } else {
+            setSelectedDate(null);
+        }
     };
 
-    // Calculate total price of services
-    const getTotalPrice = (services) => {
-        return services?.length
-            ? services.reduce((total, service) => total + (service.price || 0), 0)
-            : 0;
-    };
-
-
-    const columns = [
-        {
-            title: 'Navbati',
-            dataIndex: 'order_number',
-            key: 'order_number',
-            align: 'center',
-            width: 80,
-            render: (orderNumber) => orderNumber || 'N/A',
-        },
-        {
-            title: 'Bemor ismi',
-            key: 'patient_name',
-            render: (_, record) => `${record.patientId.firstname} ${record.patientId.lastname}`,
-            width: 150,
-        },
-        {
-            title: 'Qabul',
-            dataIndex: ['doctorId', 'specialization'],
-            key: 'specialization',
-            render: (phone) => capitalizeFirstLetter(phone),
-            width: 120,
-        },
-        {
-            title: 'Xizmatlar',
-            key: 'services',
-            render: (_, record) => {
-                const serviceNames = record?.services?.map(service => service.name).join(', ') || 'Xizmatlar yoʻq';
-                return serviceNames;
-            },
-            width: 200,
-        },
-        {
-            title: 'To\'lov summasi',
-            dataIndex: 'payment_amount',
-            key: 'payment_amount',
-            render: (amount) => amount ? `${amount?.toLocaleString()} soʻm` : "N/A",
-            width: 120,
-        },
-        {
-            title: 'To\'lov turi',
-            dataIndex: 'paymentType',
-            key: 'paymentType',
-            render: (paymentType) => capitalizeFirstLetter(paymentType) || "N/A",
-            width: 100,
-        },
-        {
-            title: 'Soat',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            render: (date) => {
-                const d = new Date(date);
-                const hours = String(d.getHours()).padStart(2, '0');
-                const minutes = String(d.getMinutes()).padStart(2, '0');
-                return `${hours}:${minutes}`;
-            },
-            width: 80,
-        },
-        {
-            title: 'Amallar',
-            key: 'actions',
-            align: 'center',
-            render: (_, record) => (
-                hasNAValue(record) ? (
-                    <Button
-                        type="primary"
-                        icon={<WarningOutlined />}
-                        onClick={() => handleNAAlert(record)}
-                        size="small"
-                        className="no-print"
-                        style={{ backgroundColor: '#ff4d4f', borderColor: '#ff4d4f' }}
-                    >
-                        Eslatma
-                    </Button>
-                ) : (
-                    <Button
-                        type="primary"
-                        icon={<PrinterOutlined />}
-                        onClick={() => handleRowPrint(record)}
-                        size="small"
-                        className="no-print"
-                        style={{ backgroundColor: '#1890ff', borderColor: '#1890ff' }}
-                    >
-                        Chop etish
-                    </Button>
-                )
-            ),
-            width: 120,
-        },
+    const monthsInUzbek = [
+        'Yanvar',
+        'Fevral',
+        'Mart',
+        'Aprel',
+        'May',
+        'Iyun',
+        'Iyul',
+        'Avgust',
+        'Sentabr',
+        'Oktabr',
+        'Noyabr',
+        'Dekabr',
     ];
 
-    const tableStyles = `
-        @media print {
-            .no-print { display: none; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ddd; padding: 6px; }
-            th { background-color: #f2f2f2; }
+    const specializations = useMemo(() => {
+        const specs = new Set(
+            allStories?.innerData
+                ?.map((record) => record.doctorId?.specialization)
+                .filter(Boolean)
+        );
+        return ['Barchasi', ...specs];
+    }, [allStories]);
+
+    const filteredData = useMemo(() => {
+        let result = allStories?.innerData
+            ? [...allStories.innerData].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+            : [];
+
+        if (selectedSpecialization && selectedSpecialization !== 'Barchasi') {
+            result = result.filter(
+                (record) => record.doctorId?.specialization === selectedSpecialization
+            );
         }
-        .ant-table-tbody > tr > td { padding: 8px !important; font-size: 12px !important; }
-        .ant-table-thead > tr > th { padding: 8px !important; font-size: 12px !important; }
-        .ant-table-row { height: auto !important; }
-        .ant-table-cell { vertical-align: middle !important; }
-        .highlight-row { background-color: #ffe6e6 !important; }
-        .highlight-row td { border-color: #ff9999 !important; }
-        .payment-type-button { margin: 5px; }
-    `;
 
-    const sortedData = allStories?.innerData
-        ? [...allStories.innerData].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-        : [];
+        if (selectedDate && selectedDate.isValid()) {
+            const startOfSelectedDay = moment(selectedDate).startOf('day');
+            const endOfSelectedDay = moment(selectedDate).endOf('day');
+            result = result.filter((record) =>
+                moment(record.createdAt).isBetween(startOfSelectedDay, endOfSelectedDay, null, '[]')
+            );
+        }
 
+        return result;
+    }, [allStories, selectedSpecialization, selectedDate]);
+
+    const columns = useMemo(() => {
+        const today = moment().startOf('day');
+        const baseColumns = [
+            {
+                title: 'Navbati',
+                dataIndex: 'order_number',
+                key: 'order_number',
+                align: 'center',
+                width: 80,
+                render: (orderNumber) => orderNumber || 'N/A',
+            },
+            {
+                title: 'Bemor ismi',
+                key: 'patient_name',
+                render: (_, record) =>
+                    `${record.patientId?.firstname || 'N/A'} ${record.patientId?.lastname || 'N/A'}`,
+                width: 150,
+            },
+            {
+                title: 'Qabul',
+                dataIndex: ['doctorId', 'specialization'],
+                key: 'specialization',
+                render: (phone) => capitalizeFirstLetter(phone || 'N/A'),
+                width: 120,
+            },
+            {
+                title: 'Xizmatlar',
+                key: 'services',
+                render: (_, record) =>
+                    record?.services?.map((service) => service.name).join(', ') || 'Xizmatlar yoʻq',
+                width: 200,
+            },
+            {
+                title: 'To\'lov summasi',
+                dataIndex: 'payment_amount',
+                key: 'payment_amount',
+                render: (amount) => (amount ? `${amount.toLocaleString()} soʻm` : 'N/A'),
+                width: 120,
+            },
+            {
+                title: 'To\'lov turi',
+                dataIndex: 'paymentType',
+                key: 'paymentType',
+                render: (paymentType) => capitalizeFirstLetter(paymentType || 'N/A'),
+                width: 100,
+            },
+            {
+                title: 'Soat',
+                dataIndex: 'createdAt',
+                key: 'createdAt',
+                render: (date) => {
+                    const d = new Date(date);
+                    const hours = String(d.getHours()).padStart(2, '0');
+                    const minutes = String(d.getMinutes()).padStart(2, '0');
+                    return `${hours}:${minutes}`;
+                },
+                width: 80,
+            },
+        ];
+
+        if (moment().isSame(selectedDate, 'day')) {
+            baseColumns.push({
+                title: 'Faollashtirish',
+                key: 'actions',
+                align: 'center',
+                render: (_, record) =>
+                    hasNAValue(record) ? (
+                        <Button
+                            type="primary"
+                            onClick={() => handleNAAlert(record)}
+                            size="small"
+                            className="no-print"
+                            style={{ backgroundColor: 'green', borderColor: '#beff4d' }}
+                        ><GiCheckMark /></Button>
+                    ) : (
+                        <Button
+                            type="primary"
+                            onClick={() => handleRowPrint(record)}
+                            size="small"
+                            className="no-print"
+                            style={{ backgroundColor: '#1890ff', borderColor: '#1890ff' }}
+                        ><PrinterOutlined /></Button>
+                    ),
+                width: 120,
+            });
+        }
+
+        return baseColumns;
+    }, [selectedDate, hasNAValue]);
+
+    const tableStyles = `
+    @media print {
+      .no-print { display: none; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { border: 1px solid #ddd; padding: 6px; }
+      th { background-color: #f2f2f2; }
+    }
+    .ant-table-tbody > tr > td { padding: 8px !important; font-size: 12px !important; }
+    .ant-table-thead > tr > th { padding: 8px !important; font-size: 12px !important; }
+    .ant-table-row { height: auto !important; }
+    .ant-table-cell { vertical-align: middle !important; }
+    .highlight-row { background-color: #fff7cc !important; } /* sariq fon */
+    .highlight-row td { border-color: #ffd633 !important; }  /* sariq chegara */
+    .payment-type-button { margin: 5px; }
+    .filter-container { display: flex; gap: 16px; margin-bottom: 16px; }
+    .date-input { width: 120px; padding: 4px; font-size: 12px; }
+  `;
+
+
+
+
+    // Handle deletion of unconfirmed appointments
+    const handleDeleteUnconfirmed = async () => {
+        try {
+            const response = await deleteUnconfirmedAppointments().unwrap();
+
+            if (response?.state) {
+                window.toast.success(
+                    "Muvaffaqiyat",
+                    `${response.deletedCount} ta tasdiqlanmagan uchrashuv oʻchirildi.`
+                );
+            } else {
+                window.toast.error("Tasdiqlanmagan uchrashuvlarni oʻchirishda xatolik.");
+            }
+        } catch (error) {
+            console.error("Delete unconfirmed appointments error:", error);
+            window.toast.error(
+                error?.data?.message || "Oʻchirishda xatolik yuz berdi."
+            );
+        }
+    };
     return (
         <div className="registration-container">
             <style>{tableStyles}</style>
-            <Title level={4} className="registration-title">
+            <Title level={5} className="registration-title">
                 Qabulni kutyotgan bemorlar
             </Title>
+            <div className="filter-container">
+                <div>
+                    <Select
+                        placeholder="Qabul bo'yicha filtr"
+                        style={{ width: 165 }}
+                        onChange={setSelectedSpecialization}
+                        value={selectedSpecialization}
+                        allowClear
+                    >
+                        {specializations.map((spec) => (
+                            <Option key={spec} value={spec}>
+                                {capitalizeFirstLetter(spec)}
+                            </Option>
+                        ))}
+                    </Select>
+                    <input
+                        type="text"
+                        placeholder="Sanani tanlang (DD-MM-YYYY)"
+                        value={dateInput}
+                        onChange={handleDateInputChange}
+                        className="date-inputtab"
+                    />
+                    {dateError && <p style={{ color: 'red', fontSize: '12px' }}>{dateError}</p>}
+                </div>
+
+                <Popconfirm
+                    title="Belgilangann vaqtda doktor qabuliga kelmagan bemorlarni o‘chirishni tasdiqlaysizmi?"
+                    description="Bugungi kunda belgilangan vaqtda qabulga kelmagan, tasdiqlanmagan uchrashuvlar butunlay o‘chiriladi. Ushbu amalni qaytarib bo‘lmaydi!"
+
+                    okText="Ha"
+                    cancelText="Yoʻq"
+                    onConfirm={handleDeleteUnconfirmed}
+                    okButtonProps={{ loading: isDeleting }}
+                    overlayStyle={{ width: 400 }}   // <<< shu joyda eni beriladi
+                >
+                    <button
+                        type="danger"
+                        loading={isDeleting}
+                        style={{ fontSize: "20px", borderColor: 'red' }}
+                        className="no-print"
+                    ><MdDeleteSweep />
+                    </button>
+                </Popconfirm>
+            </div>
             {isLoadingAllStories ? (
                 <Spin size="large" style={{ display: 'block', margin: '50px auto' }} />
             ) : (
                 <Table
                     columns={columns}
-                    dataSource={sortedData}
+                    dataSource={filteredData}
                     rowKey={(record) => record._id}
                     bordered
                     pagination={false}
                     size="small"
                     style={{ background: '#fff' }}
-                    rowClassName={(record) => hasNAValue(record) ? 'highlight-row' : ''}
+                    rowClassName={(record) => (hasNAValue(record) ? 'highlight-row' : '')}
                 />
             )}
             <div style={{ display: 'none' }}>
@@ -312,17 +439,19 @@ const NewRegistrations = () => {
                 centered
             >
                 <p>To'lov amalga oshirilmoqdami?</p>
-                <p style={{ color: "green" }}>Jami to'lov: {getTotalPrice(selectedRecord?.services).toLocaleString()} so'm</p>
+                <p style={{ color: 'green' }}>
+                    Jami to'lov: {getTotalPrice(selectedRecord?.services).toLocaleString()} so'm
+                </p>
                 <div style={{ marginTop: '10px' }}>
                     <Button
-                        type={selectedPaymentType === 'naqt' ? "primary" : "default"}
+                        type={selectedPaymentType === 'naqt' ? 'primary' : 'default'}
                         onClick={() => handlePaymentTypeSelect('naqt')}
                         className="payment-type-button"
                     >
                         Naqd
                     </Button>
                     <Button
-                        type={selectedPaymentType === 'karta' ? "primary" : "default"}
+                        type={selectedPaymentType === 'karta' ? 'primary' : 'default'}
                         onClick={() => handlePaymentTypeSelect('karta')}
                         className="payment-type-button"
                     >
@@ -331,8 +460,11 @@ const NewRegistrations = () => {
                 </div>
                 {errorMessage && <p style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</p>}
             </Modal>
+            <ToastContainer />
         </div>
     );
 };
 
 export default NewRegistrations;
+
+

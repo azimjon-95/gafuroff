@@ -11,14 +11,65 @@
     /* gap: 7px; */
 }
 
+.filter-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filter-container>div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.no-print {
+    padding: 0 10px;
+    background: transparent;
+}
+
 /* General container styling */
 .registration-container {
     width: 100%;
-    height: calc(100vh - 70px);
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    height: calc(100vh - 55px);
+    border-radius: 16px 16px 0px 0px !important;
+    /* box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); */
     transition: all 0.3s ease;
     overflow-x: auto;
+    padding: 0 4px;
+}
+
+.registration-container:first-child {
+    width: 70%;
+}
+
+.date-inputtab {
+    padding: 10px;
+    height: 32px;
+    width: 92px;
+    border-radius: 8px !important;
+    outline: none;
+    border: 1px solid #d9e1e8 !important;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.date-inputtab:hover {
+    border-color: #4983ff !important;
+    background-color: #ffffff;
+}
+
+.date-inputtab:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    background-color: #ffffff;
+}
+
+.registration-container .ant-table-cell {
+    padding: 2px 8px !important;
+    font-size: 11px !important;
+    text-wrap: nowrap !important;
 }
 
 .registration-container::-webkit-scrollbar {
@@ -100,12 +151,12 @@
 }
 
 /* Form row for side-by-side fields */
-.form-row {
+.form-rowres {
     display: flex;
     gap: 15px;
 }
 
-.form-row .ant-form-item {
+.form-rowres .ant-form-item {
     flex: 1;
 }
 

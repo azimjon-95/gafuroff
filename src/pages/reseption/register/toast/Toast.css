@@ -1,0 +1,127 @@
+.custom-toast {
+    position: relative;
+    padding: 5px 16px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    color: white;
+    width: 300px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.toast-content {
+    position: relative;
+    z-index: 2;
+    font-size: 13px;
+}
+
+/* Slide-in animation */
+.toast-enter {
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Scatter animation */
+.toast-exit {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+.scatter-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: inherit;
+    border-radius: 2px;
+    z-index: 1;
+}
+
+.piece-1 {
+    top: 10px;
+    left: 10px;
+    animation: scatter 0.6s ease-out forwards;
+}
+
+.piece-2 {
+    top: 10px;
+    right: 10px;
+    animation: scatter 0.6s ease-out forwards;
+}
+
+.piece-3 {
+    bottom: 10px;
+    left: 10px;
+    animation: scatter 0.6s ease-out forwards;
+}
+
+.piece-4 {
+    bottom: 10px;
+    right: 10px;
+    animation: scatter 0.6s ease-out forwards;
+}
+
+.piece-5 {
+    top: 50%;
+    left: 50%;
+    animation: scatter 0.6s ease-out forwards;
+}
+
+@keyframes scatter {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(calc(50px * var(--direction-x)), calc(50px * var(--direction-y))) scale(0.5);
+    }
+}
+
+.piece-1 {
+    --direction-x: -1;
+    --direction-y: -1;
+}
+
+.piece-2 {
+    --direction-x: 1;
+    --direction-y: -1;
+}
+
+.piece-3 {
+    --direction-x: -1;
+    --direction-y: 1;
+}
+
+.piece-4 {
+    --direction-x: 1;
+    --direction-y: 1;
+}
+
+.piece-5 {
+    --direction-x: 0;
+    --direction-y: 0;
+    animation: scatterCenter 0.6s ease-out forwards;
+}
+
+@keyframes scatterCenter {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0);
+    }
+}

@@ -8,16 +8,8 @@ import { useReactToPrint } from "react-to-print";
 import { useDispatch } from "react-redux";
 import { todaysApi } from "../../../context/todaysApi";
 import { useGetPotsentsLengthQuery } from "../../../context/doctorApi";
-import {
-  notification,
-  Form,
-  Select,
-  Input,
-  Button,
-  Typography,
-  Spin,
-  Radio,
-} from "antd";
+import { Form, Select, Input, Button, Typography, Spin, Radio, Modal } from "antd";
+import ToastContainer from "./toast/ToastContainer";
 import ModelCheck from "../../../components/check/modelCheck/ModelCheck";
 import moment from "moment";
 import "./registration.css";
@@ -38,12 +30,27 @@ const Registration = () => {
   const dispatch = useDispatch();
   const contentRef = useRef(null);
   const [data, setData] = useState(null);
-
   const [phone, setPhone] = useState("");
   const [findPatientByPhone] = useLazyFindPatientByPhoneQuery();
+  const [isAppointmentChanged, setIsAppointmentChanged] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPaymentType, setSelectedPaymentType] = useState("naqt");
+
+  const reactToPrintFn = useReactToPrint({
+    contentRef: contentRef,
+    pageStyle: `
+      @page {
+        size: 80mm auto;
+        margin: 0;
+      }
+      @media print {
+        body { margin: 0; }
+        * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
+      }
+    `,
+  });
 
   // Telefon raqam o‘zgarganda qidirish
-
   const handlePhoneChange = async (e) => {
     const formattedValue = formatPhoneNumber(e.target.value);
     form.setFieldsValue({ phone: formattedValue });
@@ -62,16 +69,9 @@ const Registration = () => {
             address: patient.address,
             gender: patient.gender,
           });
-          notification.info({
-            message: "Bemor topildi",
-            description: `${patient.firstname} ${patient.lastname} ma'lumotlari yuklandi.`,
-          });
         }
       } catch {
-        notification.warning({
-          message: "Topilmadi",
-          description: "Bu telefon raqam bilan bemor topilmadi.",
-        });
+        console.error("Topilmadi", "Bu telefon raqam bilan bemor topilmadi.");
       }
     }
   };
@@ -84,7 +84,6 @@ const Registration = () => {
   React.useEffect(() => {
     if (selectedServices && selectedServices.length > 0) {
       const totalPrice = selectedServices.reduce((total, service) => {
-        // Parse service if it's a JSON string, otherwise use directly
         const serviceObj =
           typeof service === "string" ? JSON.parse(service) : service;
         return total + (serviceObj.price || 0);
@@ -95,20 +94,6 @@ const Registration = () => {
       form.setFieldsValue({ payment_amount: "" });
     }
   }, [selectedServices, form]);
-
-  const reactToPrintFn = useReactToPrint({
-    contentRef: contentRef,
-    pageStyle: `
-      @page {
-        size: 80mm auto;
-        margin: 0;
-      }
-      @media print {
-        body { margin: 0; }
-        * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
-      }
-    `,
-  });
 
   const initialValues = {
     doctorId: "",
@@ -123,29 +108,40 @@ const Registration = () => {
     paymentType: "naqt",
     payment_amount: "",
     description: "",
-    startTime: moment().format("YYYY-MM-DD HH:mm"),
+    appointmentDate: moment().format("DD.MM.YYYY"),
+    appointmentTime: moment().format("HH:mm"),
     treating: false,
     debtor: false,
   };
 
-  const onFinish = async (values) => {
+
+
+  const handleModalOk = async () => {
     try {
+      const values = form.getFieldsValue();
       const cleanedServices = values.services.map((service) => {
         return typeof service === "string" ? JSON.parse(service) : service;
       });
 
+      const appointmentDate = values.appointmentDate;
+      const appointmentTime = values.appointmentTime;
+      const createdAt = moment(`${appointmentDate} ${appointmentTime}`, "DD.MM.YYYY HH:mm").format("YYYY-MM-DD HH:mm");
+
       const patientData = {
         ...values,
-        services: cleanedServices, // Use cleaned services array
+        services: cleanedServices,
+        paymentType: selectedPaymentType,
         payment_amount: values.payment_amount
           ? Number(values.payment_amount.replace(/\./g, ""))
           : 0,
         phone: `${values.phone.replace(/\s/g, "")}`,
+        createdAt: createdAt,
+        isImmediate: !isAppointmentChanged,
       };
 
       const response = await addPotsents(patientData).unwrap();
 
-      if (response?.innerData) {
+      if (response.innerData.patient.order_number) {
         setData({
           response: response.innerData,
           services: patientData.services,
@@ -156,28 +152,35 @@ const Registration = () => {
         dispatch(
           todaysApi.util.invalidateTags([{ type: "Stories", id: "LIST" }])
         );
-        form.resetFields();
-        notification.success({
-          message: "Muvaffaqiyat",
-          description: `Bemor muvaffaqiyatli roʻyxatdan oʻtkazildi! Navbat raqami: ${
-            response?.innerData?.order_number || "N/A"
-          }`,
-        });
+        window.toast.success(
+          "Muvaffaqiyat",
+          `Bemor muvaffaqiyatli roʻyxatdan oʻtkazildi! Navbat raqami: ${response.innerData.order_number}`
+        );
       } else {
-        notification.error({
-          message: "Xatolik",
-          description: "Ma'lumotlar saqlashda xatolik yuz berdi.",
-        });
+        window.toast.success(
+          "Muvaffaqiyat",
+          `Bemor muvaffaqiyatli roʻyxatdan oʻtkazildi! Kelish vaqti: ${createdAt}`
+        );
       }
+      form.resetFields();
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Registration error:", error);
-      notification.error({
-        message: "Xatolik",
-        description:
-          error?.data?.message ||
-          "Xatolik yuz berdi. Iltimos, qayta urinib koʻring.",
-      });
+      window.toast.error(
+        error?.data?.message || "Xatolik yuz berdi. Iltimos, qayta urinib koʻring."
+      );
+      setIsModalOpen(false);
     }
+  };
+  const onFinish = async (values) => {
+    if (!isAppointmentChanged) {
+      setIsModalOpen(true); // Show modal for payment type selection
+    } else {
+      handleModalOk()
+    }
+  };
+  const handleModalCancel = () => {
+    setIsModalOpen(false);
   };
 
   const formatPhoneNumber = (value) => {
@@ -203,7 +206,6 @@ const Registration = () => {
       .replace(/,/g, ".");
   };
 
-  // Get services for the selected doctor
   const getDoctorServices = () => {
     if (!selectedDoctorId || !doctors?.innerData) return [];
     const selectedDoctor = doctors.innerData.find(
@@ -214,7 +216,7 @@ const Registration = () => {
 
   return (
     <div className="registration-container">
-      <Title level={4} className="registration-title">
+      <Title level={5} className="registration-title">
         Bemorlarni Roʻyxatdan Oʻtkazish
       </Title>
 
@@ -307,7 +309,42 @@ const Registration = () => {
           </Select>
         </Form.Item>
 
-        <div className="form-row">
+        <div className="form-rowres">
+          <Form.Item
+            name="appointmentDate"
+            label="Kun (DD.MM.YYYY)"
+            rules={[
+              { required: true, message: "Iltimos, kunni kiriting!" },
+              {
+                pattern: /^\d{2}\.\d{2}\.\d{4}$/,
+                message: "Kun DD.MM.YYYY formatida bo'lishi kerak!",
+              },
+            ]}
+          >
+            <Input
+              placeholder="DD.MM.YYYY"
+              onChange={() => setIsAppointmentChanged(true)}
+            />
+          </Form.Item>
+          <Form.Item
+            name="appointmentTime"
+            label="Vaqt (HH:mm)"
+            rules={[
+              { required: true, message: "Iltimos, vaqtni kiriting!" },
+              {
+                pattern: /^\d{2}:\d{2}$/,
+                message: "Vaqt HH:mm formatida bo'lishi kerak!",
+              },
+            ]}
+          >
+            <Input
+              placeholder="HH:mm"
+              onChange={() => setIsAppointmentChanged(true)}
+            />
+          </Form.Item>
+        </div>
+
+        <div className="form-rowres">
           <Form.Item
             name="phone"
             label="Telefon raqami"
@@ -332,41 +369,9 @@ const Registration = () => {
           >
             <Input placeholder="AA42540404" maxLength={9} />
           </Form.Item>
-          {/* <Form.Item
-            name="phone"
-            label="Telefon raqami"
-            rules={[
-              {
-                required: true,
-                message: "Iltimos, telefon raqamini kiriting!",
-              },
-              {
-                validator: (_, value) => {
-                  if (!value) return Promise.resolve();
-                  const cleanedValue = value.replace(/\s/g, "");
-                  if (/^\d{9}$/.test(cleanedValue)) return Promise.resolve();
-                  return Promise.reject(
-                    new Error(
-                      "Telefon raqami 9 raqamdan iborat boʻlishi kerak (masalan, 94 432 44 54)!"
-                    )
-                  );
-                },
-              },
-            ]}
-          >
-            <Input
-              addonBefore="+998"
-              placeholder="94 432 44 54"
-              maxLength={12}
-              onChange={(e) => {
-                const formattedValue = formatPhoneNumber(e.target.value);
-                form.setFieldsValue({ phone: formattedValue });
-              }}
-            />
-          </Form.Item> */}
         </div>
 
-        <div className="form-row">
+        <div className="form-rowres">
           <Form.Item
             name="firstname"
             label="Ism"
@@ -390,7 +395,7 @@ const Registration = () => {
           </Form.Item>
         </div>
 
-        <div className="form-row">
+        <div className="form-rowres">
           <Form.Item
             name="year"
             label="Tugʻilgan yili"
@@ -417,7 +422,7 @@ const Registration = () => {
           </Form.Item>
         </div>
 
-        <div className="form-row">
+        <div className="form-rowres">
           <div className="form-rowbox">
             <Form.Item
               name="gender"
@@ -427,21 +432,6 @@ const Registration = () => {
               <Radio.Group>
                 <Radio value="erkak">Erkak</Radio>
                 <Radio value="ayol">Ayol</Radio>
-              </Radio.Group>
-            </Form.Item>
-            <Form.Item
-              name="paymentType"
-              label="Toʻlov turi"
-              rules={[
-                {
-                  required: true,
-                  message: "Iltimos, toʻlov turini tanlang!",
-                },
-              ]}
-            >
-              <Radio.Group>
-                <Radio value="naqt">Naqd</Radio>
-                <Radio value="karta">Karta</Radio>
               </Radio.Group>
             </Form.Item>
           </div>
@@ -474,8 +464,9 @@ const Registration = () => {
 
         <Form.Item name="description" label="Bemor shikoyati">
           <TextArea
-            rows={4}
+            rows={3}
             placeholder="Masalan: Nafas qisishi, yurak urishi tezlashuvi..."
+            style={{ resize: "none" }}
           />
         </Form.Item>
 
@@ -492,9 +483,27 @@ const Registration = () => {
         </Form.Item>
       </Form>
 
+      <Modal
+        title="Toʻlov turini tanlang"
+        open={isModalOpen && !isAppointmentChanged}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        okText="OK"
+        cancelText="Bekor qilish"
+      >
+        <Radio.Group
+          value={selectedPaymentType}
+          onChange={(e) => setSelectedPaymentType(e.target.value)}
+        >
+          <Radio value="naqt">Naqd</Radio>
+          <Radio value="karta">Karta</Radio>
+        </Radio.Group>
+      </Modal>
+
       <div style={{ display: "none" }}>
         <ModelCheck data={data} contentRef={contentRef} />
       </div>
+      <ToastContainer />
     </div>
   );
 };

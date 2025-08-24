@@ -6,9 +6,16 @@ export const todaysApi = api.injectEndpoints({
             query: () => '/story/todays',
             providesTags: () => [{ type: 'Stories', id: 'LIST' }],
         }),
+        deleteUnconfirmedAppointments: builder.mutation({
+            query: () => ({
+                url: "/patients/unconfirmed",
+                method: "DELETE",
+            }),
+        }),
     }),
 });
 
 export const {
-    useGetAllTodaysQuery
+    useGetAllTodaysQuery,
+    useDeleteUnconfirmedAppointmentsMutation
 } = todaysApi;
