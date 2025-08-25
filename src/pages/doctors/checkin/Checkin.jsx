@@ -212,11 +212,13 @@ const Checkin = () => {
   }, [sortedPatients]);
 
   // Function to get initials from the doctor's name
+  // Function to get initials from the doctor's name
   const getInitials = (name) => {
     if (!name) return "";
     const nameParts = name.trim().split(" ");
-    const firstInitial = nameParts[0]?.charAt(0).toUpperCase() || "";
-    return `${firstInitial}`;
+    const firstInitial = nameParts[0] || "";
+    const lastInitial = nameParts[1]?.charAt(0).toUpperCase() || "";
+    return `${firstInitial}.${lastInitial}`;
   };
 
   const doctorInitials = getInitials(Doctor);
@@ -425,202 +427,7 @@ const Checkin = () => {
                 </tr>
               ))}
             </tbody>
-            <tbody>
-              {sortedPatients.map((patient) => (
-                <tr
-                  key={patient._id}
-                  className={`patient-row ${patient.view ? "completed" : ""}`}
-                >
-                  {moment(patient.createdAt).isSame(moment(), "day") &&
-                    <td className="order-number">{patient.order_number}</td>
-                  }
-                  <td>
-                    {moment(patient.createdAt).isSame(moment(), "day") ? (
-                      <p style={{ color: "green", fontWeight: "bold" }}>
-                        {moment(patient.createdAt).format("HH:mm")}
-                      </p>
-                    ) : (
-                      `${moment(patient.createdAt).format("D")} ${UZBEK_MONTHS[moment(patient.createdAt).month()]
-                      } ${moment(patient.createdAt).format("HH:mm")}`
-                    )}
-                  </td>
-                  <td>
-                    <div className="patient-name">
-                      <div>
-                        <strong>{patient.patientId.name}</strong>
-                        <br />
-                        <small>{PhoneNumberFormat(patient.patientId.phone)}</small>
-                      </div>
-                    </div>
-                  </td>
-                  <td>{patient.patientId.age} yosh</td>
-                  <td>
-                    <div className="kaldata">
-                      {patient?.services?.map((val, inx) => (
-                        <div key={inx}>{val.name}</div>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="medical-info">
-                    {patient?.patientId?.height &&
-                      patient?.patientId?.weight &&
-                      patient?.patientId?.bmi &&
-                      patient?.patientId?.bloodGroup ? (
-                      <div className="medical-info-container">
-                        <div className="bmi-info">
-                          <Scale size={12} color="#6b7280" aria-hidden="true" />
-                          <span
-                            className={`bmi-value bmi-${getBMIStatus(
-                              patient?.patientId?.bmi
-                            )}`}
-                            style={{
-                              color: getBMIColor(patient?.patientId?.bmi),
-                            }}
-                          >
-                            BMI: {patient?.patientId?.bmi}
-                          </span>
-                        </div>
-                        <div className="blood-group-info">
-                          <Heart size={12} color="#dc2626" aria-hidden="true" />
-                          <span className="blood-group-value">
-                            {patient?.patientId?.bloodGroup}
-                          </span>
-                        </div>
-                        <div className="physical-stats">
-                          {patient?.patientId?.height}cm,{" "}
-                          {patient?.patientId?.weight}kg
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => handleAddMedicalInfo(patient)}
-                        className="add-medical-btn"
 
-                        aria-label={`Tibbiy ma'lumot qo'shish ${patient.patientId.name}`}
-                      >
-                        <Plus size={14} aria-hidden="true" />
-                        Qo'shish
-                      </button>
-                    )}
-                  </td>
-                  <td>
-                    <div className="history-count">
-                      <Activity className="history-icon" aria-hidden="true" />
-                      <span>{patient.visitHistory.length} marta</span>
-                    </div>
-                  </td>
-                  <td>
-                    <button
-                      className="consult-btn"
-                      onClick={() => handleConsultPatient(patient)}
-                      aria-label={`Qabul qilish ${patient.patientId.name}`}
-                      disabled={showPast}
-                    >
-                      <Stethoscope className="btn-icon" aria-hidden="true" />
-                      Qabul qilish
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tbody>
-              {sortedPatients.map((patient) => (
-                <tr
-                  key={patient._id}
-                  className={`patient-row ${patient.view ? "completed" : ""}`}
-                >
-                  {moment(patient.createdAt).isSame(moment(), "day") &&
-                    <td className="order-number">{patient.order_number}</td>
-                  }
-                  <td>
-                    {moment(patient.createdAt).isSame(moment(), "day") ? (
-                      <p style={{ color: "green", fontWeight: "bold" }}>
-                        {moment(patient.createdAt).format("HH:mm")}
-                      </p>
-                    ) : (
-                      `${moment(patient.createdAt).format("D")} ${UZBEK_MONTHS[moment(patient.createdAt).month()]
-                      } ${moment(patient.createdAt).format("HH:mm")}`
-                    )}
-                  </td>
-                  <td>
-                    <div className="patient-name">
-                      <div>
-                        <strong>{patient.patientId.name}</strong>
-                        <br />
-                        <small>{PhoneNumberFormat(patient.patientId.phone)}</small>
-                      </div>
-                    </div>
-                  </td>
-                  <td>{patient.patientId.age} yosh</td>
-                  <td>
-                    <div className="kaldata">
-                      {patient?.services?.map((val, inx) => (
-                        <div key={inx}>{val.name}</div>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="medical-info">
-                    {patient?.patientId?.height &&
-                      patient?.patientId?.weight &&
-                      patient?.patientId?.bmi &&
-                      patient?.patientId?.bloodGroup ? (
-                      <div className="medical-info-container">
-                        <div className="bmi-info">
-                          <Scale size={12} color="#6b7280" aria-hidden="true" />
-                          <span
-                            className={`bmi-value bmi-${getBMIStatus(
-                              patient?.patientId?.bmi
-                            )}`}
-                            style={{
-                              color: getBMIColor(patient?.patientId?.bmi),
-                            }}
-                          >
-                            BMI: {patient?.patientId?.bmi}
-                          </span>
-                        </div>
-                        <div className="blood-group-info">
-                          <Heart size={12} color="#dc2626" aria-hidden="true" />
-                          <span className="blood-group-value">
-                            {patient?.patientId?.bloodGroup}
-                          </span>
-                        </div>
-                        <div className="physical-stats">
-                          {patient?.patientId?.height}cm,{" "}
-                          {patient?.patientId?.weight}kg
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => handleAddMedicalInfo(patient)}
-                        className="add-medical-btn"
-
-                        aria-label={`Tibbiy ma'lumot qo'shish ${patient.patientId.name}`}
-                      >
-                        <Plus size={14} aria-hidden="true" />
-                        Qo'shish
-                      </button>
-                    )}
-                  </td>
-                  <td>
-                    <div className="history-count">
-                      <Activity className="history-icon" aria-hidden="true" />
-                      <span>{patient.visitHistory.length} marta</span>
-                    </div>
-                  </td>
-                  <td>
-                    <button
-                      className="consult-btn"
-                      onClick={() => handleConsultPatient(patient)}
-                      aria-label={`Qabul qilish ${patient.patientId.name}`}
-                      disabled={showPast}
-                    >
-                      <Stethoscope className="btn-icon" aria-hidden="true" />
-                      Qabul qilish
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
           </table>
         </div>
       </div>
