@@ -160,6 +160,22 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
       </div>
     );
   }
+  const qarzdorlar = patientsData?.reduce((acc, patient) => {
+    // har bir patient roomStories ni tekshiramiz
+    const hasDebt = patient?.roomStories?.some(story => {
+      // faqat active bo'lgan stories
+      if (!story.active) return false;
+
+      // agar paidDays ichida isPaid === false bo'lsa qarzdor
+      return story.paidDays?.some(day => day.isPaid === false);
+    });
+
+    if (hasDebt) {
+      acc.push(patient); // qarzdor bo'lsa qo'shamiz
+    }
+
+    return acc;
+  }, []);
 
   // If patientId is provided but no patient is found, show error
   if (patientId && !selectedPatient) {
@@ -173,6 +189,8 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
       </div>
     );
   }
+
+
 
   return (
     <div className="history-dashboard">
@@ -227,7 +245,7 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
                   <Heart className="stat-icon treating" />
                   <div>
                     <span className="stat-number">
-                      {patientsData.filter((p) => p.treating).length}
+                      {patientsData.filter((p) => p.roomStories[0]?.active).length}
                     </span>
                     <span className="stat-label">Davolanmoqda</span>
                   </div>
@@ -236,7 +254,7 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
                   <CreditCard className="stat-icon debtor" />
                   <div>
                     <span className="stat-number">
-                      {patientsData.filter((p) => p.debtor).length}
+                      {qarzdorlar.length}
                     </span>
                     <span className="stat-label">Qarzdorlar</span>
                   </div>
@@ -244,85 +262,7 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
               </div>
             </div>
           </div>
-          {/* <div className="patients-list">
-            {filteredPatients.length === 0 ? (
-              <div className="no-patients">
-                <p>Hech qanday bemor topilmadi</p>
-              </div>
-            ) : (
-              filteredPatients.map((patient) => (
-                <div
-                  key={patient._id}
-                  className={`patient-card ${patient.treating ? "treating" : ""} ${patient.debtor ? "debtor" : ""
-                    }`}
-                  onClick={() => setSelectedPatient(patient)}
-                >
-                  <div className="patient-avatar">
-                    {patient.avatar ? (
-                      <img src={patient.avatar} alt="Avatar" />
-                    ) : (
-                      <User size={24} />
-                    )}
-                  </div>
-                  <div className="patient-infohis">
-                    <h3>
-                      {patient.firstname} {patient.lastname}
-                    </h3>
-                    <p>ID: {patient.idNumber}</p>
-                    <p>Tel: {patient.phone}</p>
-                    <p>Manzil: {patient.address}</p>
-                    <p>
-                      Yosh: {patient.year || "N/A"} yil{" "}
-                      {patient.year
-                        ? `(${new Date().getFullYear() - parseInt(patient.year)} yoshda)`
-                        : ""}
-                    </p>
-                    <p>
-                      Jins:{" "}
-                      {patient.gender === "erkak"
-                        ? "Erkak"
-                        : patient.gender === "ayol"
-                          ? "Ayol"
-                          : patient.gender === "male"
-                            ? "Erkak"
-                            : patient.gender === "female"
-                              ? "Ayol"
-                              : "N/A"}
-                    </p>
-                    {patient.totalUnpaidAmount > 0 && (
-                      <p className="unpaid-amount">
-                        To'lanmagan: {formatCurrency(patient.totalUnpaidAmount)}
-                      </p>
-                    )}
-                  </div>
-                  <div className="patient-status">
-                    {patient.treating && (
-                      <span className="status treating">
-                        <Stethoscope size={16} />
-                        Davolanmoqda
-                      </span>
-                    )}
-                    {patient.debtor && (
-                      <span className="status debtor">
-                        <CreditCard size={16} />
-                        Qarzdor
-                      </span>
-                    )}
-                    <span className="visit-info">
-                      Oxirgi tashrif: {moment(patient.lastVisit).format("DD.MM.YYYY")}
-                    </span>
-                    <div
-                      style={{ display: "flex", gap: "20px" }}
-                      className="patient-stats"
-                    >
-                      <span>Tarixlar: {patient.stories?.length || 0}</span>
-                      <span>Xona tarixi: {patient.roomStories?.length || 0}</span>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div> */}
+
           <div className="patients-list">
             {filteredPatients.length === 0 ? (
               <div className="no-patients">
@@ -340,10 +280,8 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
                       <th>Yosh</th>
                       <th>Jins</th>
                       <th>To'lanmagan</th>
-                      <th>Holati</th>
                       <th>Oxirgi tashrif</th>
                       <th>Tarixlar</th>
-                      <th>Xona tarixi</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -376,21 +314,9 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
                             {patient.totalUnpaidAmount > 0 ? formatCurrency(patient.totalUnpaidAmount) : "-"}
                           </span>
                         </td>
-                        <td>
-                          {patient.treating && (
-                            <span className="status treating">
-                              <Stethoscope size={16} /> Davolanmoqda
-                            </span>
-                          )}
-                          {patient.debtor && (
-                            <span className="status debtor">
-                              <CreditCard size={16} /> Qarzdor
-                            </span>
-                          )}
-                        </td>
+
                         <td>{moment(patient.lastVisit).format("DD.MM.YYYY")}</td>
                         <td>{patient.stories?.length || 0}</td>
-                        <td>{patient.roomStories?.length || 0}</td>
                       </tr>
                     ))}
 
