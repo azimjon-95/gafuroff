@@ -99,9 +99,9 @@ const ClinicManagement = () => {
           lunch_break: {
             start_time: clinicToEdit.work_schedule?.lunch_break?.start_time
               ? moment(
-                clinicToEdit.work_schedule.lunch_break.start_time,
-                "HH:mm"
-              )
+                  clinicToEdit.work_schedule.lunch_break.start_time,
+                  "HH:mm"
+                )
               : null,
             end_time: clinicToEdit.work_schedule?.lunch_break?.end_time
               ? moment(clinicToEdit.work_schedule.lunch_break.end_time, "HH:mm")
@@ -113,13 +113,13 @@ const ClinicManagement = () => {
       setFileList(
         clinicToEdit.logo
           ? [
-            {
-              uid: "-1",
-              name: "logotip.jpg",
-              status: "done",
-              url: clinicToEdit.logo,
-            },
-          ]
+              {
+                uid: "-1",
+                name: "logotip.jpg",
+                status: "done",
+                url: clinicToEdit.logo,
+              },
+            ]
           : []
       );
     } else {
@@ -158,16 +158,14 @@ const ClinicManagement = () => {
   // Handle form submission
   const handleSubmit = useCallback(
     async (values) => {
+      console.log(fileList);
+
       let logoUrl = clinicToEdit?.logo || "";
-      if (fileList.length > 0 && fileList[0].originFileObj) {
-        try {
-          logoUrl = await handleUpload({
-            file: fileList[0].originFileObj,
-            setUploading,
-          });
-        } catch (error) {
-          return;
-        }
+      if (fileList?.[0]?.originFileObj) {
+        logoUrl = await handleUpload({
+          file: fileList[0].originFileObj,
+          setUploading,
+        });
       }
 
       const formattedValues = {
@@ -226,7 +224,8 @@ const ClinicManagement = () => {
         ]);
       } catch (error) {
         toast.error(
-          `Klinikani saqlashda xatolik: ${error?.data?.message || error.message
+          `Klinikani saqlashda xatolik: ${
+            error?.data?.message || error.message
           }`
         );
       }
@@ -246,7 +245,8 @@ const ClinicManagement = () => {
       toast.success("Klinika muvaffaqiyatli o'chirildi");
     } catch (error) {
       toast.error(
-        `Klinikani o\'chirishda xatolik: ${error?.data?.message || error.message
+        `Klinikani o\'chirishda xatolik: ${
+          error?.data?.message || error.message
         }`
       );
     }
@@ -282,7 +282,7 @@ const ClinicManagement = () => {
           toast.error("Rasm hajmi 2MB dan kichik bo'lishi kerak!");
           return false;
         }
-        setFileList([file]);
+        setFileList([{ ...file, originFileObj: file }]);
         return false;
       },
       fileList,
@@ -389,8 +389,8 @@ const ClinicManagement = () => {
     : clinics?.innerData &&
       typeof clinics?.innerData === "object" &&
       Object.keys(clinics?.innerData).length > 0
-      ? [clinics?.innerData]
-      : [];
+    ? [clinics?.innerData]
+    : [];
 
   return (
     <div style={{ padding: "24px", background: "#f0f2f5", minHeight: "100vh" }}>

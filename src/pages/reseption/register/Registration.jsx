@@ -8,7 +8,16 @@ import { useReactToPrint } from "react-to-print";
 import { useDispatch } from "react-redux";
 import { todaysApi } from "../../../context/todaysApi";
 import { useGetPotsentsLengthQuery } from "../../../context/doctorApi";
-import { Form, Select, Input, Button, Typography, Spin, Radio, Modal } from "antd";
+import {
+  Form,
+  Select,
+  Input,
+  Button,
+  Typography,
+  Spin,
+  Radio,
+  Modal,
+} from "antd";
 import ToastContainer from "./toast/ToastContainer";
 import ModelCheck from "../../../components/check/modelCheck/ModelCheck";
 import moment from "moment";
@@ -114,8 +123,6 @@ const Registration = () => {
     debtor: false,
   };
 
-
-
   const handleModalOk = async () => {
     try {
       const values = form.getFieldsValue();
@@ -125,7 +132,10 @@ const Registration = () => {
 
       const appointmentDate = values.appointmentDate;
       const appointmentTime = values.appointmentTime;
-      const createdAt = moment(`${appointmentDate} ${appointmentTime}`, "DD.MM.YYYY HH:mm").format("YYYY-MM-DD HH:mm");
+      const createdAt = moment(
+        `${appointmentDate} ${appointmentTime}`,
+        "DD.MM.YYYY HH:mm"
+      ).format("YYYY-MM-DD HH:mm");
 
       const patientData = {
         ...values,
@@ -138,7 +148,6 @@ const Registration = () => {
         createdAt: createdAt,
         isImmediate: !isAppointmentChanged,
       };
-
       const response = await addPotsents(patientData).unwrap();
 
       if (response.innerData.patient.order_number) {
@@ -167,7 +176,8 @@ const Registration = () => {
     } catch (error) {
       console.error("Registration error:", error);
       window.toast.error(
-        error?.data?.message || "Xatolik yuz berdi. Iltimos, qayta urinib koʻring."
+        error?.data?.message ||
+          "Xatolik yuz berdi. Iltimos, qayta urinib koʻring."
       );
       setIsModalOpen(false);
     }
@@ -176,7 +186,7 @@ const Registration = () => {
     if (!isAppointmentChanged) {
       setIsModalOpen(true); // Show modal for payment type selection
     } else {
-      handleModalOk()
+      handleModalOk();
     }
   };
   const handleModalCancel = () => {

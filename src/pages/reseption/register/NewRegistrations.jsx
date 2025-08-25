@@ -286,12 +286,24 @@ const NewRegistrations = () => {
         render: (phone) => capitalizeFirstLetter(phone || "N/A"),
         width: 120,
       },
+      // {
+      //   title: "Xizmatlar",
+      //   key: "services",
+      //   render: (_, record) =>
+      //     record?.services?.map((service) => service.name).join(", ") ||
+      //     "Xizmatlar yoʻq",
+      //   width: 200,
+      // },
       {
         title: "Xizmatlar",
         key: "services",
-        render: (_, record) =>
-          record?.services?.map((service) => service.name).join(", ") ||
-          "Xizmatlar yoʻq",
+        render: (_, record) => {
+          const names =
+            record?.services?.map((service) => service.name).join(", ") ||
+            "Xizmatlar yoʻq";
+          const short = names.length > 30 ? names.slice(0, 30) + "..." : names;
+          return <span title={names}>{short}</span>;
+        },
         width: 200,
       },
       {

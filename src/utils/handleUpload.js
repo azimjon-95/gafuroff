@@ -6,7 +6,8 @@ export const handleUpload = async ({ file, setUploading }) => {
   formData.append("image", file);
   formData.append(
     "key",
-    process.env.REACT_APP_IMGBB_API_KEY || "7d0e5cda4c0a69b73c6ea854e71807dd"
+    "7d0e5cda4c0a69b73c6ea854e71807dd"
+    // process.env.REACT_APP_IMGBB_API_KEY || "7d0e5cda4c0a69b73c6ea854e71807dd"
   );
   setUploading(true);
   try {
