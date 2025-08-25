@@ -216,9 +216,8 @@ const Checkin = () => {
   const getInitials = (name) => {
     if (!name) return "";
     const nameParts = name.trim().split(" ");
-    const firstInitial = nameParts[0] || "";
-    const lastInitial = nameParts[1]?.charAt(0).toUpperCase() || "";
-    return `${firstInitial}.${lastInitial}`;
+    const firstInitial = nameParts[0]?.charAt(0).toUpperCase() || "";
+    return `${firstInitial}`;
   };
 
   const doctorInitials = getInitials(Doctor);
