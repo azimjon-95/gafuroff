@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { PhoneNumberFormat } from "../../../hook/NumberFormat";
 import {
-  Calendar,
   Stethoscope,
   User,
   CheckCircle,
@@ -19,21 +19,27 @@ import { useUpdateBmiPotsentsMutation } from "../../../context/clientApi";
 import LoadingSkeleton from "./skeleton/LoadingSkeleton";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Switch } from "antd";
 import "./style.css";
 import socket from "../../../socket";
 import moment from "moment";
 
-// Constants for table headers
-const TABLE_HEADERS = [
-  "№",
-  "Sana",
-  "Bemorning ismi",
-  "Yoshi",
-  "Tashrif",
-  "Tibbiy ma'lumot",
-  "Tarix",
-  "Amal",
+// Uzbek month names
+const UZBEK_MONTHS = [
+  "Yanvar",
+  "Fevral",
+  "Mart",
+  "Aprel",
+  "May",
+  "Iyun",
+  "Iyul",
+  "Avgust",
+  "Sentabr",
+  "Oktabr",
+  "Noyabr",
+  "Dekabr",
 ];
+
 
 // Utility function to calculate BMI
 const calculateBMI = (height, weight) => {
@@ -62,15 +68,17 @@ const getBMIColor = (bmi) => {
 const Checkin = () => {
   const navigate = useNavigate();
   const workerId = localStorage.getItem("workerId");
+  const Doctor = localStorage.getItem("admin_fullname");
   const { data, isLoading, isError, error, refetch, isFetching } =
     useGetStoriesByDoctorQuery(workerId, {
       skip: !workerId,
     });
 
   useEffect(() => {
-    socket.on("new_story", (newPatient) => {
+    socket.on("new_story", () => {
       refetch();
     });
+    return () => socket.off("new_story");
   }, [refetch]);
 
   const [showModal, setShowModal] = useState(false);
@@ -82,6 +90,7 @@ const Checkin = () => {
   });
   const [formErrors, setFormErrors] = useState({});
   const [updateBmiPotsents] = useUpdateBmiPotsentsMutation();
+  const [showPast, setShowPast] = useState(false);
 
   // Memoized BMI calculation
   const bmi = useMemo(
@@ -159,9 +168,7 @@ const Checkin = () => {
       refetch();
     } catch (err) {
       toast.error(
-        `Xatolik yuz berdi: ${
-          err?.data?.message || "Ma'lumotlarni saqlashda xato"
-        }`,
+        `Xatolik yuz berdi: ${err?.data?.message || "Ma'lumotlarni saqlashda xato"}`,
         {
           position: "top-right",
           autoClose: 5000,
@@ -170,14 +177,49 @@ const Checkin = () => {
     }
   }, [formData, bmi, selectedPatient, updateBmiPotsents, refetch]);
 
-  // Memoized sorted patients
-  const sortedPatients = useMemo(() => {
-    return (
-      data?.innerData?.patients
-        ?.slice()
-        .sort((a, b) => a.order_number - b.order_number) || []
-    );
+  // Memoized today's and past patients
+  const todaysPatients = useMemo(() => {
+    return data?.innerData?.patients?.filter((p) =>
+      moment(p.createdAt).isSame(moment(), "day")
+    ) || [];
   }, [data]);
+
+  const pastPatients = useMemo(() => {
+    return data?.innerData?.patients?.filter(
+      (p) => !moment(p.createdAt).isSame(moment(), "day")
+    ) || [];
+  }, [data]);
+
+  // Memoized sorted patients based on showPast
+  const sortedPatients = useMemo(() => {
+    const patientsToSort = showPast ? pastPatients : todaysPatients;
+    return patientsToSort.slice().sort((a, b) => a.order_number - b.order_number);
+  }, [showPast, todaysPatients, pastPatients]);
+
+  // Memoized sorted patients based on showPast
+  const sortedPatientsLength = useMemo(() => {
+    const patientsToSort = showPast ? todaysPatients : pastPatients;
+    return patientsToSort.slice().sort((a, b) => a.order_number - b.order_number).length;
+  }, [showPast, todaysPatients, pastPatients]);
+
+  // Computed counts for displayed patients
+  const unviewedCount = useMemo(() => {
+    return sortedPatients.filter((p) => !p.view).length;
+  }, [sortedPatients]);
+
+  const viewedCount = useMemo(() => {
+    return sortedPatients.filter((p) => p.view).length;
+  }, [sortedPatients]);
+
+  // Function to get initials from the doctor's name
+  const getInitials = (name) => {
+    if (!name) return "";
+    const nameParts = name.trim().split(" ");
+    const firstInitial = nameParts[0]?.charAt(0).toUpperCase() || "";
+    return `${firstInitial}`;
+  };
+
+  const doctorInitials = getInitials(Doctor);
 
   if (isLoading) {
     return (
@@ -235,13 +277,17 @@ const Checkin = () => {
             <div className="header-info">
               <Stethoscope className="header-icon" aria-hidden="true" />
               <div>
-                <h1>Doktor Paneli</h1>
-                <p>
-                  Bugungi navbat:{" "}
-                  {data?.innerData?.todayUnviewedCount +
-                    data?.innerData?.todayViewedCount || 0}{" "}
-                  bemor
-                </p>
+                <h1>Doktor - {doctorInitials}</h1>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <Switch
+                    checked={showPast}
+                    onChange={(checked) => setShowPast(checked)}
+                    checkedChildren="Bugungilar"
+                    unCheckedChildren="Kutilyotganlar"
+                    style={{ backgroundColor: showPast ? "#1890ff" : "#d9d9d9" }}
+                  />
+                  <p>{sortedPatientsLength}-ta</p>
+                </div>
               </div>
             </div>
           </div>
@@ -250,23 +296,16 @@ const Checkin = () => {
             <div className="stat-card">
               <Users className="stat-icon waiting" aria-hidden="true" />
               <div>
-                <h3>{data?.innerData?.todayUnviewedCount || 0}</h3>
+                <h3>{unviewedCount}</h3>
                 <p>Kutayotgan</p>
               </div>
             </div>
             <div className="stat-card">
               <CheckCircle className="stat-icon completed" aria-hidden="true" />
               <div>
-                <h3>{data?.innerData?.todayViewedCount || 0}</h3>
+                <h3>{viewedCount}</h3>
                 <p>Qabul qilingan</p>
               </div>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="dates-info">
-              <Calendar className="date-icon" aria-hidden="true" />
-              <span>{new Date().toLocaleDateString("uz-UZ")}</span>
             </div>
           </div>
         </div>
@@ -275,11 +314,17 @@ const Checkin = () => {
           <table>
             <thead>
               <tr>
-                {TABLE_HEADERS.map((header) => (
-                  <th key={header} className="table-header">
-                    {header}
-                  </th>
-                ))}
+                {
+                  !showPast &&
+                  <th className="table-header">№</th>
+                }
+                <th className="table-header">Sana</th>
+                <th className="table-header">Bemorning ismi</th>
+                <th className="table-header">Yoshi</th>
+                <th className="table-header">Tashrif</th>
+                <th className="table-header">Tibbiy ma'lumot</th>
+                <th className="table-header">Tarix</th>
+                <th className="table-header">Amal</th>
               </tr>
             </thead>
             <tbody>
@@ -288,24 +333,25 @@ const Checkin = () => {
                   key={patient._id}
                   className={`patient-row ${patient.view ? "completed" : ""}`}
                 >
-                  <td className="order-number">{patient.order_number}</td>
-                  {/* <td>{moment(patient.createdAt).format("DD-MM-YYYY")}</td> */}
+                  {moment(patient.createdAt).isSame(moment(), "day") &&
+                    <td className="order-number">{patient.order_number}</td>
+                  }
                   <td>
                     {moment(patient.createdAt).isSame(moment(), "day") ? (
                       <p style={{ color: "green", fontWeight: "bold" }}>
-                        Bugun
+                        {moment(patient.createdAt).format("HH:mm")}
                       </p>
                     ) : (
-                      moment(patient.createdAt).format("DD-MM-YYYY")
+                      `${moment(patient.createdAt).format("D")} ${UZBEK_MONTHS[moment(patient.createdAt).month()]
+                      } ${moment(patient.createdAt).format("HH:mm")}`
                     )}
                   </td>
                   <td>
                     <div className="patient-name">
-                      {/* <User className="patient-icon" aria-hidden="true" /> */}
                       <div>
                         <strong>{patient.patientId.name}</strong>
                         <br />
-                        <small>{patient.patientId.phone}</small>
+                        <small>{PhoneNumberFormat(patient.patientId.phone)}</small>
                       </div>
                     </div>
                   </td>
@@ -319,9 +365,9 @@ const Checkin = () => {
                   </td>
                   <td className="medical-info">
                     {patient?.patientId?.height &&
-                    patient?.patientId?.weight &&
-                    patient?.patientId?.bmi &&
-                    patient?.patientId?.bloodGroup ? (
+                      patient?.patientId?.weight &&
+                      patient?.patientId?.bmi &&
+                      patient?.patientId?.bloodGroup ? (
                       <div className="medical-info-container">
                         <div className="bmi-info">
                           <Scale size={12} color="#6b7280" aria-hidden="true" />
@@ -351,6 +397,7 @@ const Checkin = () => {
                       <button
                         onClick={() => handleAddMedicalInfo(patient)}
                         className="add-medical-btn"
+
                         aria-label={`Tibbiy ma'lumot qo'shish ${patient.patientId.name}`}
                       >
                         <Plus size={14} aria-hidden="true" />
@@ -369,6 +416,203 @@ const Checkin = () => {
                       className="consult-btn"
                       onClick={() => handleConsultPatient(patient)}
                       aria-label={`Qabul qilish ${patient.patientId.name}`}
+                      disabled={showPast}
+                    >
+                      <Stethoscope className="btn-icon" aria-hidden="true" />
+                      Qabul qilish
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tbody>
+              {sortedPatients.map((patient) => (
+                <tr
+                  key={patient._id}
+                  className={`patient-row ${patient.view ? "completed" : ""}`}
+                >
+                  {moment(patient.createdAt).isSame(moment(), "day") &&
+                    <td className="order-number">{patient.order_number}</td>
+                  }
+                  <td>
+                    {moment(patient.createdAt).isSame(moment(), "day") ? (
+                      <p style={{ color: "green", fontWeight: "bold" }}>
+                        {moment(patient.createdAt).format("HH:mm")}
+                      </p>
+                    ) : (
+                      `${moment(patient.createdAt).format("D")} ${UZBEK_MONTHS[moment(patient.createdAt).month()]
+                      } ${moment(patient.createdAt).format("HH:mm")}`
+                    )}
+                  </td>
+                  <td>
+                    <div className="patient-name">
+                      <div>
+                        <strong>{patient.patientId.name}</strong>
+                        <br />
+                        <small>{PhoneNumberFormat(patient.patientId.phone)}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{patient.patientId.age} yosh</td>
+                  <td>
+                    <div className="kaldata">
+                      {patient?.services?.map((val, inx) => (
+                        <div key={inx}>{val.name}</div>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="medical-info">
+                    {patient?.patientId?.height &&
+                      patient?.patientId?.weight &&
+                      patient?.patientId?.bmi &&
+                      patient?.patientId?.bloodGroup ? (
+                      <div className="medical-info-container">
+                        <div className="bmi-info">
+                          <Scale size={12} color="#6b7280" aria-hidden="true" />
+                          <span
+                            className={`bmi-value bmi-${getBMIStatus(
+                              patient?.patientId?.bmi
+                            )}`}
+                            style={{
+                              color: getBMIColor(patient?.patientId?.bmi),
+                            }}
+                          >
+                            BMI: {patient?.patientId?.bmi}
+                          </span>
+                        </div>
+                        <div className="blood-group-info">
+                          <Heart size={12} color="#dc2626" aria-hidden="true" />
+                          <span className="blood-group-value">
+                            {patient?.patientId?.bloodGroup}
+                          </span>
+                        </div>
+                        <div className="physical-stats">
+                          {patient?.patientId?.height}cm,{" "}
+                          {patient?.patientId?.weight}kg
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleAddMedicalInfo(patient)}
+                        className="add-medical-btn"
+
+                        aria-label={`Tibbiy ma'lumot qo'shish ${patient.patientId.name}`}
+                      >
+                        <Plus size={14} aria-hidden="true" />
+                        Qo'shish
+                      </button>
+                    )}
+                  </td>
+                  <td>
+                    <div className="history-count">
+                      <Activity className="history-icon" aria-hidden="true" />
+                      <span>{patient.visitHistory.length} marta</span>
+                    </div>
+                  </td>
+                  <td>
+                    <button
+                      className="consult-btn"
+                      onClick={() => handleConsultPatient(patient)}
+                      aria-label={`Qabul qilish ${patient.patientId.name}`}
+                      disabled={showPast}
+                    >
+                      <Stethoscope className="btn-icon" aria-hidden="true" />
+                      Qabul qilish
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tbody>
+              {sortedPatients.map((patient) => (
+                <tr
+                  key={patient._id}
+                  className={`patient-row ${patient.view ? "completed" : ""}`}
+                >
+                  {moment(patient.createdAt).isSame(moment(), "day") &&
+                    <td className="order-number">{patient.order_number}</td>
+                  }
+                  <td>
+                    {moment(patient.createdAt).isSame(moment(), "day") ? (
+                      <p style={{ color: "green", fontWeight: "bold" }}>
+                        {moment(patient.createdAt).format("HH:mm")}
+                      </p>
+                    ) : (
+                      `${moment(patient.createdAt).format("D")} ${UZBEK_MONTHS[moment(patient.createdAt).month()]
+                      } ${moment(patient.createdAt).format("HH:mm")}`
+                    )}
+                  </td>
+                  <td>
+                    <div className="patient-name">
+                      <div>
+                        <strong>{patient.patientId.name}</strong>
+                        <br />
+                        <small>{PhoneNumberFormat(patient.patientId.phone)}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{patient.patientId.age} yosh</td>
+                  <td>
+                    <div className="kaldata">
+                      {patient?.services?.map((val, inx) => (
+                        <div key={inx}>{val.name}</div>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="medical-info">
+                    {patient?.patientId?.height &&
+                      patient?.patientId?.weight &&
+                      patient?.patientId?.bmi &&
+                      patient?.patientId?.bloodGroup ? (
+                      <div className="medical-info-container">
+                        <div className="bmi-info">
+                          <Scale size={12} color="#6b7280" aria-hidden="true" />
+                          <span
+                            className={`bmi-value bmi-${getBMIStatus(
+                              patient?.patientId?.bmi
+                            )}`}
+                            style={{
+                              color: getBMIColor(patient?.patientId?.bmi),
+                            }}
+                          >
+                            BMI: {patient?.patientId?.bmi}
+                          </span>
+                        </div>
+                        <div className="blood-group-info">
+                          <Heart size={12} color="#dc2626" aria-hidden="true" />
+                          <span className="blood-group-value">
+                            {patient?.patientId?.bloodGroup}
+                          </span>
+                        </div>
+                        <div className="physical-stats">
+                          {patient?.patientId?.height}cm,{" "}
+                          {patient?.patientId?.weight}kg
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleAddMedicalInfo(patient)}
+                        className="add-medical-btn"
+
+                        aria-label={`Tibbiy ma'lumot qo'shish ${patient.patientId.name}`}
+                      >
+                        <Plus size={14} aria-hidden="true" />
+                        Qo'shish
+                      </button>
+                    )}
+                  </td>
+                  <td>
+                    <div className="history-count">
+                      <Activity className="history-icon" aria-hidden="true" />
+                      <span>{patient.visitHistory.length} marta</span>
+                    </div>
+                  </td>
+                  <td>
+                    <button
+                      className="consult-btn"
+                      onClick={() => handleConsultPatient(patient)}
+                      aria-label={`Qabul qilish ${patient.patientId.name}`}
+                      disabled={showPast}
                     >
                       <Stethoscope className="btn-icon" aria-hidden="true" />
                       Qabul qilish
@@ -422,9 +666,7 @@ const Checkin = () => {
                   placeholder="Masalan: 175"
                   className="form-input"
                   aria-invalid={!!formErrors.height}
-                  aria-describedby={
-                    formErrors.height ? "height-error" : undefined
-                  }
+                  aria-describedby={formErrors.height ? "height-error" : undefined}
                 />
                 {formErrors.height && (
                   <span id="height-error" className="form-error">
@@ -446,9 +688,7 @@ const Checkin = () => {
                   placeholder="Masalan: 70"
                   className="form-input"
                   aria-invalid={!!formErrors.weight}
-                  aria-describedby={
-                    formErrors.weight ? "weight-error" : undefined
-                  }
+                  aria-describedby={formErrors.weight ? "weight-error" : undefined}
                 />
                 {formErrors.weight && (
                   <span id="weight-error" className="form-error">
@@ -468,9 +708,7 @@ const Checkin = () => {
                   onChange={handleInputChange}
                   className="form-select"
                   aria-invalid={!!formErrors.bloodGroup}
-                  aria-describedby={
-                    formErrors.bloodGroup ? "bloodGroup-error" : undefined
-                  }
+                  aria-describedby={formErrors.bloodGroup ? "bloodGroup-error" : undefined}
                 >
                   <option value="">Qon guruhini tanlang</option>
                   {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
