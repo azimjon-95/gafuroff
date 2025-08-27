@@ -36,7 +36,7 @@ const PatientDetailsView = ({
   setSelectedPatient,
   patientServicesData,
   patientId,
-  setViewHistory
+  setViewHistory,
 }) => {
   const [createExpense] = useCreateExpenseMutation();
   const [activeTab, setActiveTab] = useState("overview");
@@ -72,11 +72,11 @@ const PatientDetailsView = ({
   const getPatientAge = (year) => new Date().getFullYear() - parseInt(year);
 
   const getStatusColor = (status) =>
-  ({
-    normal: "#22c55e",
-    high: "#ef4444",
-    low: "#f59e0b",
-  }[status] || "#6b7280");
+    ({
+      normal: "#22c55e",
+      high: "#ef4444",
+      low: "#f59e0b",
+    }[status] || "#6b7280");
 
   const toggleStory = (id) =>
     setExpandedStories((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -109,7 +109,7 @@ const PatientDetailsView = ({
 
   const handleViewFile = (file, storyId) => {
     if (file.url) {
-      const baseUrl = "https://qarshi.richman.uz";
+      const baseUrl = "https://gafuroff-backend.medme.uz/";
       const fileUrl = file.url.startsWith("http")
         ? file.url
         : `${baseUrl}/${file.url.replace(/\\/g, "/")}`;
@@ -223,22 +223,22 @@ In a real application, this would contain the actual file data.`;
     },
     ...(role === "reception"
       ? [
-        {
-          title: "Tanlash",
-          width: 40,
-          render: (_, item) => (
-            <Checkbox
-              // checked={isChecked(item.dailyTracking)}
-              onChange={(e) =>
-                setSelectedRehab((prev) => ({
-                  ...prev,
-                  [item._id]: e.target.checked,
-                }))
-              }
-            />
-          ),
-        },
-      ]
+          {
+            title: "Tanlash",
+            width: 40,
+            render: (_, item) => (
+              <Checkbox
+                // checked={isChecked(item.dailyTracking)}
+                onChange={(e) =>
+                  setSelectedRehab((prev) => ({
+                    ...prev,
+                    [item._id]: e.target.checked,
+                  }))
+                }
+              />
+            ),
+          },
+        ]
       : []),
     {
       title: "Muolaja nomi",
@@ -368,12 +368,8 @@ In a real application, this would contain the actual file data.`;
       <div className="patient-details-header">
         <button
           onClick={() => {
-            patientId ?
-              setViewHistory(false)
-              :
-              setSelectedPatient(null)
-          }
-          }
+            patientId ? setViewHistory(false) : setSelectedPatient(null);
+          }}
           className="back-button"
         >
           <ArrowLeft size={20} /> Orqaga
@@ -582,8 +578,9 @@ In a real application, this would contain the actual file data.`;
                       {formatDate(visit.createdAt)}
                     </div>
                     <span
-                      className={`visit-status ${visit.payment_status ? "completed" : "pending"
-                        }`}
+                      className={`visit-status ${
+                        visit.payment_status ? "completed" : "pending"
+                      }`}
                     >
                       {visit.payment_status ? "Tugallangan" : "Kutilmoqda"}
                     </span>
@@ -638,8 +635,9 @@ In a real application, this would contain the actual file data.`;
                           {formatDate(story.createdAt)}
                         </div>
                         <span
-                          className={`prescription-status ${story.payment_status ? "active" : "expired"
-                            }`}
+                          className={`prescription-status ${
+                            story.payment_status ? "active" : "expired"
+                          }`}
                         >
                           {story.payment_status ? "Faol" : "Tugagan"}
                         </span>
@@ -713,14 +711,14 @@ In a real application, this would contain the actual file data.`;
                     <div key={lidx} className="lab-result-card">
                       <div className="lab-result-header">
                         <div className="lab-info">
-
                           <div className="lab-meta">
                             <span>
                               <Calendar size={14} /> {formatDate(lab.createdAt)}
                             </span>
                             <span>
                               <User size={14} /> Shifokor:{" "}
-                              {story.doctorId?.firstName} {story.doctorId?.lastName}
+                              {story.doctorId?.firstName}{" "}
+                              {story.doctorId?.lastName}
                             </span>
                           </div>
                         </div>
@@ -736,15 +734,21 @@ In a real application, this would contain the actual file data.`;
                           <div className="lab-results-table">
                             {items.map((result, ridx) => (
                               <div key={ridx} className="result-row">
-                                <span className="result-name">{result.name}</span>
+                                <span className="result-name">
+                                  {result.name}
+                                </span>
                                 <span
                                   className="result-value"
                                   style={{ color: getStatusColor("normal") }}
                                 >
                                   {result.result} {result.siBirlik}
                                 </span>
-                                <span className="result-normal">{result.norma}</span>
-                                <span className="result-status normal">Normal</span>
+                                <span className="result-normal">
+                                  {result.norma}
+                                </span>
+                                <span className="result-status normal">
+                                  Normal
+                                </span>
                               </div>
                             ))}
                           </div>
@@ -755,7 +759,6 @@ In a real application, this would contain the actual file data.`;
                 })
               ) || <p>Laboratoriya natijalari mavjud emas</p>}
             </div>
-
           </div>
         )}
 
@@ -775,8 +778,9 @@ In a real application, this would contain the actual file data.`;
                       <span className="ward-department">Bo'lim N/A</span>
                     </div>
                     <span
-                      className={`ward-status ${room.active ? "active" : "completed"
-                        }`}
+                      className={`ward-status ${
+                        room.active ? "active" : "completed"
+                      }`}
                     >
                       <Bed size={14} />
                       {room.active ? "Faol" : "Tugagan"}

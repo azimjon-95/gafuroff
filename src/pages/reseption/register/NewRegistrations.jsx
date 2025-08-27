@@ -17,6 +17,7 @@ import { PrinterOutlined } from "@ant-design/icons";
 import { MdDeleteSweep } from "react-icons/md";
 import { GiCheckMark } from "react-icons/gi";
 import moment from "moment";
+import "moment-timezone";
 import ToastContainer from "./toast/ToastContainer"; // Import custom ToastContainer
 import { useReactToPrint } from "react-to-print";
 import { capitalizeFirstLetter } from "../../../hook/CapitalizeFirstLitter";
@@ -325,11 +326,18 @@ const NewRegistrations = () => {
         title: "Soat",
         dataIndex: "createdAt",
         key: "createdAt",
-        render: (date) => {
+        render: (date, record) => {
+          // console.log(date, record.patientId?.firstname);
+
           const d = new Date(date);
           const hours = String(d.getHours()).padStart(2, "0");
           const minutes = String(d.getMinutes()).padStart(2, "0");
-          return `${hours}:${minutes}`;
+          // return `${hours}:${minutes}`;
+          // asia tashkent
+          return moment
+            .tz(date, "Asia/Tashkent")
+            .subtract(3, "hours")
+            .format("HH:mm");
         },
         width: 80,
       },
