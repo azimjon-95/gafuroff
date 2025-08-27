@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useMemo, useEffect } from "react";
 import {
   useGetAllTodaysQuery,
   useDeleteUnconfirmedAppointmentsMutation,
@@ -22,7 +22,7 @@ import ToastContainer from "./toast/ToastContainer"; // Import custom ToastConta
 import { useReactToPrint } from "react-to-print";
 import { capitalizeFirstLetter } from "../../../hook/CapitalizeFirstLitter";
 import ModelCheck from "../../../components/check/modelCheck/ModelCheck";
-import "./registration.css"; // Move styles to a separate CSS file
+import "./registration.css";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -42,7 +42,7 @@ const NewRegistrations = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [selectedSpecialization, setSelectedSpecialization] = useState(null);
   const [selectedDate, setSelectedDate] = useState(moment());
-  const [dateError, setDateError] = useState(null); // Added for date input error handling
+  const [dateError, setDateError] = useState(null);
   const [dateInput, setDateInput] = useState(moment().format("DD-MM-YYYY"));
   const [deleteUnconfirmedAppointments, { isLoading: isDeleting }] =
     useDeleteUnconfirmedAppointmentsMutation();
@@ -57,6 +57,13 @@ const NewRegistrations = () => {
       }
     `,
   });
+
+  // ✅ Data yangilansa avtomatik print qilinsin
+  useEffect(() => {
+    if (data) {
+      reactToPrintFn();
+    }
+  }, [data, reactToPrintFn]);
 
   const hasNAValue = useMemo(
     () => (record) =>
@@ -114,8 +121,7 @@ const NewRegistrations = () => {
         })) || [],
     };
 
-    setData(story);
-    reactToPrintFn();
+    setData(story); // ✅ faqat state yangilanadi
   };
 
   const handleNAAlert = (record) => {
@@ -131,14 +137,14 @@ const NewRegistrations = () => {
       return;
     }
 
-    const data = {
+    const dataToSend = {
       storyId: selectedRecord?._id,
       paymentType: selectedPaymentType,
       payment_amount: getTotalPrice(selectedRecord?.services),
     };
 
     try {
-      const response = await updateRedirectedPatient(data).unwrap();
+      const response = await updateRedirectedPatient(dataToSend).unwrap();
       const story = {
         response: {
           doctor: {
@@ -167,9 +173,8 @@ const NewRegistrations = () => {
           })) || [],
       };
 
-      setData(story);
+      setData(story); // ✅ data o‘zgargach print avtomatik bo‘ladi
       await refetch();
-      reactToPrintFn();
     } catch (e) {
       setErrorMessage("To‘lov ma’lumotlarini yangilashda xatolik yuz berdi.");
       return;
@@ -261,7 +266,6 @@ const NewRegistrations = () => {
   }, [allStories, selectedSpecialization, selectedDate]);
 
   const columns = useMemo(() => {
-    const today = moment().startOf("day");
     const baseColumns = [
       {
         title: "Navbati",
@@ -388,18 +392,16 @@ const NewRegistrations = () => {
     .ant-table-thead > tr > th { padding: 8px !important; font-size: 12px !important; }
     .ant-table-row { height: auto !important; }
     .ant-table-cell { vertical-align: middle !important; }
-    .highlight-row { background-color: #fff7cc !important; } /* sariq fon */
-    .highlight-row td { border-color: #ffd633 !important; }  /* sariq chegara */
+    .highlight-row { background-color: #fff7cc !important; }
+    .highlight-row td { border-color: #ffd633 !important; }
     .payment-type-button { margin: 5px; }
     .filter-container { display: flex; gap: 16px; margin-bottom: 16px; }
     .date-input { width: 120px; padding: 4px; font-size: 12px; }
   `;
 
-  // Handle deletion of unconfirmed appointments
   const handleDeleteUnconfirmed = async () => {
     try {
       const response = await deleteUnconfirmedAppointments().unwrap();
-
       if (response?.state) {
         window.toast.success(
           "Muvaffaqiyat",
@@ -417,6 +419,7 @@ const NewRegistrations = () => {
       );
     }
   };
+
   return (
     <div className="registration-container">
       <style>{tableStyles}</style>
@@ -438,13 +441,6 @@ const NewRegistrations = () => {
               </Option>
             ))}
           </Select>
-          {/* <input
-                        type="text"
-                        placeholder="Sanani tanlang (DD-MM-YYYY)"
-                        value={dateInput}
-                        onChange={handleDateInputChange}
-                        className="date-inputtab"
-                    /> */}
           <input
             style={{ width: 125 }}
             type="date"
@@ -468,7 +464,7 @@ const NewRegistrations = () => {
           cancelText="Yoʻq"
           onConfirm={handleDeleteUnconfirmed}
           okButtonProps={{ loading: isDeleting }}
-          overlayStyle={{ width: 400 }} // <<< shu joyda eni beriladi
+          overlayStyle={{ width: 400 }}
         >
           <button
             type="danger"
@@ -480,6 +476,7 @@ const NewRegistrations = () => {
           </button>
         </Popconfirm>
       </div>
+
       {isLoadingAllStories ? (
         <Spin size="large" style={{ display: "block", margin: "50px auto" }} />
       ) : (
@@ -494,9 +491,11 @@ const NewRegistrations = () => {
           rowClassName={(record) => (hasNAValue(record) ? "highlight-row" : "")}
         />
       )}
+
       <div style={{ display: "none" }}>
         <ModelCheck data={data} contentRef={contentRef} />
       </div>
+
       <Modal
         title="To'lov holati"
         open={isModalVisible}
@@ -531,6 +530,7 @@ const NewRegistrations = () => {
           <p style={{ color: "red", marginTop: "10px" }}>{errorMessage}</p>
         )}
       </Modal>
+
       <ToastContainer />
     </div>
   );
