@@ -340,7 +340,7 @@ const NewRegistrations = () => {
           // asia tashkent
           return moment
             .tz(date, "Asia/Tashkent")
-            .subtract(3, "hours")
+            // .subtract(3, "hours")
             .format("HH:mm");
         },
         width: 80,
