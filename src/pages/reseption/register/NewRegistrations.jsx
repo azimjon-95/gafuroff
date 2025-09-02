@@ -35,7 +35,6 @@ import "./registration.css";
 import { useDispatch } from "react-redux";
 import { todaysApi } from "../../../context/todaysApi";
 import { useGetPotsentsLengthQuery } from "../../../context/doctorApi";
-import create from "@ant-design/icons/lib/components/IconFont";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -45,7 +44,9 @@ const NewRegistrations = () => {
     data: allStories,
     isLoading: isLoadingAllStories,
     refetch,
+    error,
   } = useGetAllTodaysQuery();
+  console.log(error);
 
   const [updateRedirectedPatient] = useUpdateRedirectedPatientMutation();
   const [deleteStory] = useDeleteStoryMutation();
@@ -73,8 +74,6 @@ const NewRegistrations = () => {
     doctors?.innerData?.find(
       (i) => i._id === selectedServiceDoctor?.doctorId?._id
     )?.services || [];
-
-  console.log(doctorsService);
 
   const reactToPrintFn = useReactToPrint({
     contentRef,
@@ -228,35 +227,6 @@ const NewRegistrations = () => {
     setErrorMessage(null);
   };
 
-  const handleDateInputChange = (e) => {
-    const value = e.target.value;
-    setDateInput(value);
-
-    const parsedDate = moment(value, "DD-MM-YYYY", true);
-    if (parsedDate.isValid()) {
-      setSelectedDate(parsedDate);
-    } else if (value === "") {
-      setSelectedDate(null);
-    } else {
-      setSelectedDate(null);
-    }
-  };
-
-  const monthsInUzbek = [
-    "Yanvar",
-    "Fevral",
-    "Mart",
-    "Aprel",
-    "May",
-    "Iyun",
-    "Iyul",
-    "Avgust",
-    "Sentabr",
-    "Oktabr",
-    "Noyabr",
-    "Dekabr",
-  ];
-
   const specializations = useMemo(() => {
     const specs = new Set(
       allStories?.innerData
@@ -388,13 +358,14 @@ const NewRegistrations = () => {
               />
               <Popconfirm
                 title="Haqiqatdan ham o'chirmoqchimisiz?"
-                onConfirm={() => {
-                  deleteStory(record._id);
+                onConfirm={async () => {
+                  await deleteStory(record._id);
                   dispatch(
                     todaysApi.util.invalidateTags([
                       { type: "Stories", id: "LIST" },
                     ])
                   );
+                  await refetch();
                   window.toast.success(
                     "Muvaffaqiyat",
                     `${record.patientId?.firstname} ${record.patientId?.lastname} navbatini o'chirildi.`
@@ -567,7 +538,7 @@ const NewRegistrations = () => {
       ) : (
         <Table
           columns={columns}
-          dataSource={filteredData}
+          dataSource={error?.status === 404 ? [] : filteredData}
           rowKey={(record) => record._id}
           bordered
           pagination={false}
