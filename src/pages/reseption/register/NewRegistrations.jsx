@@ -3,7 +3,11 @@ import {
   useGetAllTodaysQuery,
   useDeleteUnconfirmedAppointmentsMutation,
 } from "../../../context/todaysApi";
-import { useUpdateRedirectedPatientMutation } from "../../../context/storyApi";
+import {
+  useUpdateRedirectedPatientMutation,
+  useDeleteStoryMutation,
+  useUpdateStoryServicesMutation,
+} from "../../../context/storyApi";
 import {
   Table,
   Spin,
@@ -13,7 +17,12 @@ import {
   Select,
   Popconfirm,
 } from "antd";
-import { PrinterOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+  PrinterOutlined,
+} from "@ant-design/icons";
 import { MdDeleteSweep } from "react-icons/md";
 import { GiCheckMark } from "react-icons/gi";
 import moment from "moment";
@@ -23,6 +32,10 @@ import { useReactToPrint } from "react-to-print";
 import { capitalizeFirstLetter } from "../../../hook/CapitalizeFirstLitter";
 import ModelCheck from "../../../components/check/modelCheck/ModelCheck";
 import "./registration.css";
+import { useDispatch } from "react-redux";
+import { todaysApi } from "../../../context/todaysApi";
+import { useGetPotsentsLengthQuery } from "../../../context/doctorApi";
+import create from "@ant-design/icons/lib/components/IconFont";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -33,7 +46,11 @@ const NewRegistrations = () => {
     isLoading: isLoadingAllStories,
     refetch,
   } = useGetAllTodaysQuery();
+
   const [updateRedirectedPatient] = useUpdateRedirectedPatientMutation();
+  const [deleteStory] = useDeleteStoryMutation();
+  const [updateStoryServices] = useUpdateStoryServicesMutation();
+  const dispatch = useDispatch();
   const contentRef = useRef(null);
   const [data, setData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -46,6 +63,18 @@ const NewRegistrations = () => {
   const [dateInput, setDateInput] = useState(moment().format("DD-MM-YYYY"));
   const [deleteUnconfirmedAppointments, { isLoading: isDeleting }] =
     useDeleteUnconfirmedAppointmentsMutation();
+
+  const [editService, setEditService] = useState(null);
+  const [selectedServiceDoctor, setSelectedServiceDoctor] = useState(null);
+  const [newService, setNewService] = useState(null);
+  const { data: doctors } = useGetPotsentsLengthQuery();
+
+  let doctorsService =
+    doctors?.innerData?.find(
+      (i) => i._id === selectedServiceDoctor?.doctorId?._id
+    )?.services || [];
+
+  console.log(doctorsService);
 
   const reactToPrintFn = useReactToPrint({
     contentRef,
@@ -95,6 +124,7 @@ const NewRegistrations = () => {
     }
 
     const story = {
+      createdAt: record.createdAt,
       response: {
         doctor: {
           specialization: record.doctorId?.specialization || "N/A",
@@ -291,14 +321,6 @@ const NewRegistrations = () => {
         render: (phone) => capitalizeFirstLetter(phone || "N/A"),
         width: 120,
       },
-      // {
-      //   title: "Xizmatlar",
-      //   key: "services",
-      //   render: (_, record) =>
-      //     record?.services?.map((service) => service.name).join(", ") ||
-      //     "Xizmatlar yoʻq",
-      //   width: 200,
-      // },
       {
         title: "Xizmatlar",
         key: "services",
@@ -338,12 +360,52 @@ const NewRegistrations = () => {
           const minutes = String(d.getMinutes()).padStart(2, "0");
           // return `${hours}:${minutes}`;
           // asia tashkent
-          return moment
-            .tz(date, "Asia/Tashkent")
-            // .subtract(3, "hours")
-            .format("HH:mm");
+          return (
+            moment
+              .tz(date, "Asia/Tashkent")
+              // .subtract(3, "hours")
+              .format("HH:mm")
+          );
         },
         width: 80,
+      },
+      // navbatni bekor qilish
+      {
+        title: "Amallar",
+        render: (_, record) => {
+          return (
+            <div
+              style={{ display: "flex", justifyContent: "center", gap: "5px" }}
+            >
+              <Button
+                type="primary"
+                size="small"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setEditService(record?.services);
+                  setSelectedServiceDoctor(record);
+                }}
+              />
+              <Popconfirm
+                title="Haqiqatdan ham o'chirmoqchimisiz?"
+                onConfirm={() => {
+                  deleteStory(record._id);
+                  dispatch(
+                    todaysApi.util.invalidateTags([
+                      { type: "Stories", id: "LIST" },
+                    ])
+                  );
+                  window.toast.success(
+                    "Muvaffaqiyat",
+                    `${record.patientId?.firstname} ${record.patientId?.lastname} navbatini o'chirildi.`
+                  );
+                }} // ✅ callback bo‘lishi kerak
+              >
+                <Button danger size="small" icon={<DeleteOutlined />} />
+              </Popconfirm>
+            </div>
+          );
+        },
       },
     ];
 
@@ -416,6 +478,29 @@ const NewRegistrations = () => {
       console.error("Delete unconfirmed appointments error:", error);
       window.toast.error(
         error?.data?.message || "Oʻchirishda xatolik yuz berdi."
+      );
+    }
+  };
+
+  const updateServises = async () => {
+    try {
+      const response = await updateStoryServices({
+        id: selectedServiceDoctor?._id,
+        data: editService,
+      }).unwrap();
+      if (response?.state) {
+        setEditService(null);
+        dispatch(
+          todaysApi.util.invalidateTags([{ type: "Stories", id: "LIST" }])
+        );
+        window.toast.success(
+          "Muvaffaqiyat",
+          "Xizmatlar muvaffaqiyatli yangilandi."
+        );
+      }
+    } catch (error) {
+      window.toast.error(
+        error?.data?.message || "Yangilashda xatolik yuz berdi."
       );
     }
   };
@@ -529,6 +614,101 @@ const NewRegistrations = () => {
         {errorMessage && (
           <p style={{ color: "red", marginTop: "10px" }}>{errorMessage}</p>
         )}
+      </Modal>
+
+      <Modal
+        title="Xizmatlarni tahrirlash"
+        open={editService}
+        onOk={() => updateServises()}
+        onCancel={() => setEditService(false)}
+        okText="Saqlash"
+        cancelText="Yo'q"
+        centered
+      >
+        <Table
+          columns={[
+            {
+              title: "Xizmat nomi",
+              dataIndex: "name",
+            },
+            {
+              title: "Xizmat narxi",
+              dataIndex: "price",
+              render: (value) => value.toLocaleString(),
+            },
+            {
+              title: "amallar",
+              render: (_, record) => (
+                <div>
+                  <Button
+                    danger
+                    onClick={() =>
+                      setEditService((prev) =>
+                        prev.filter((item) => item.name !== record.name)
+                      )
+                    }
+                    icon={<DeleteOutlined />}
+                  ></Button>
+                </div>
+              ),
+            },
+          ]}
+          pagination={false}
+          dataSource={editService}
+          rowKey={(record) => record._id}
+          bordered
+        />
+        <Button
+          onClick={() => setNewService(true)}
+          style={{ marginTop: "10px" }}
+          type="primary"
+          icon={<PlusOutlined />}
+        >
+          Yangi xizmat qo'shish
+        </Button>
+
+        <Modal
+          open={newService}
+          onCancel={() => setNewService(false)}
+          onOk={() => setNewService(false)}
+          title="Yangi xizmat qo'shish"
+        >
+          <Table
+            columns={[
+              {
+                title: "Xizmat nomi",
+                dataIndex: "name",
+              },
+              {
+                title: "Xizmat narxi",
+                dataIndex: "price",
+                render: (value) => value.toLocaleString(),
+              },
+
+              {
+                title: "amallar",
+                render: (_, record) => (
+                  <div>
+                    <Button
+                      disabled={editService.some(
+                        (item) => item.name === record.name
+                      )}
+                      type="primary"
+                      onClick={() => {
+                        setEditService([...editService, record]);
+                      }}
+                      icon={<PlusOutlined />}
+                    ></Button>
+                  </div>
+                ),
+              },
+            ]}
+            pagination={false}
+            dataSource={doctorsService}
+            rowKey={(record) => record._id}
+            bordered
+          />
+        </Modal>
       </Modal>
 
       <ToastContainer />

@@ -24,6 +24,20 @@ export const storyApi = api.injectEndpoints({
         body: data,
       }),
     }),
+    deleteStory: builder.mutation({
+      query: (id) => ({
+        url: `/story/delete/${id}`,
+        method: "DELETE",
+      }),
+    }),
+    updateStoryServices: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/story/updateServices/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
+
     //.get("/story/patients-by-doctor",
     getStoriesByDoctor: builder.query({
       query: (doctorId) => `/story/patients-by-doctor/${doctorId}`,
@@ -172,6 +186,8 @@ export const {
   useGetRedirectedPatientsQuery,
   useUpdateRedirectedPatientMutation,
   useRedirectPatientMutation,
+  useDeleteStoryMutation,
+  useUpdateStoryServicesMutation,
 
   // New hooks for the added endpoints
   useGetAllPatientsStoryQuery,

@@ -59,6 +59,9 @@ function ModelCheck({ contentRef, data: story }) {
   // Get current date and time in Uzbekistan
   const { date: currentDate, time: currentTime } =
     getCurrentUzbekistanDateTime();
+
+  console.log(story);
+
   return (
     <div ref={contentRef} className="receipt-container-component">
       <div className="header-information-section">
@@ -120,7 +123,9 @@ function ModelCheck({ contentRef, data: story }) {
         <div className="information-row-container">
           <span className="information-label-text">Sana/Vaqt:</span>
           <span className="information-value-text">
-            {currentDate} {currentTime}
+            {/* {currentDate} {currentTime} */}
+            {moment(story?.createdAt).format("DD.MM.YYYY")}{" "}
+            {moment(story?.createdAt).format("HH:mm")}
           </span>
         </div>
       </div>
