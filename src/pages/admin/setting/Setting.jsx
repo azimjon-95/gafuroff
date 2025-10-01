@@ -158,8 +158,6 @@ const ClinicManagement = () => {
   // Handle form submission
   const handleSubmit = useCallback(
     async (values) => {
-      console.log(fileList);
-
       let logoUrl = clinicToEdit?.logo || "";
       if (fileList?.[0]?.originFileObj) {
         logoUrl = await handleUpload({
@@ -352,7 +350,8 @@ const ClinicManagement = () => {
         title: "Telefon",
         dataIndex: "phone",
         key: "phone",
-        render: (phone) => (phone ? PhoneNumberFormat(phone) : "Telefon Yo'q"),
+        // render: (phone) => (phone ? PhoneNumberFormat(phone) : "Telefon Yo'q"),
+        render: (phone) => (phone ? phone : "Telefon Yo'q"),
       },
       {
         title: "Amallar",
