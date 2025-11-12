@@ -46,6 +46,12 @@ const Dashboard = () => {
     }).format(amount);
   };
 
+  // Function to format date as "DD-MMM / HH:mm:ss" (e.g., "12-Mart / 12:34:00")
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    return moment(dateString).format("DD-MMM / HH:mm:ss");
+  };
+
   const kirim = data?.kirim_chiqimChart?.kirim || [];
   const chiqim = data?.kirim_chiqimChart?.chiqim || [];
 
@@ -89,8 +95,8 @@ const Dashboard = () => {
                 </p>
                 <p
                   className={`complex-stats-trend-${data?.yotqizilganBemorlar?.percentChange >= 0
-                      ? "green"
-                      : "red"
+                    ? "green"
+                    : "red"
                     }`}
                 >
                   {data?.yotqizilganBemorlar?.percentChange >= 0 ? "+" : ""}
@@ -237,10 +243,10 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody className="complex-table-body">
-                {data?.harajatlar?.map((item, index) => (
+                {(data?.harajatlar?.slice().reverse() || []).map((item, index) => (
                   <tr key={index} className="complex-table-row">
                     <td className="complex-table-cell">
-                      {moment(item?.createdAt).format("YYYY-MM-DD")}
+                      {formatDate(item?.createdAt)}
                     </td>
                     <td className="complex-table-cell">
                       <span

@@ -2,13 +2,13 @@
     background: linear-gradient(135deg, #e6f0fa 0%, #f0f7ff 100%);
     padding: 10px;
     font-family: 'Roboto', sans-serif;
+    height: 100vh;
 }
 
 .xarajatGridTartibi {
     width: 100%;
     margin: 0 auto;
     display: grid;
-    gap: 24px;
 }
 
 @media (min-width: 768px) {
@@ -19,32 +19,26 @@
 
 /* Action Buttons (Edit and Delete) */
 .amalTugmasi {
-    padding: 6px;
-    margin: 0 4px;
-    font-size: 16px;
+    font-size: 16px !important;
     line-height: 1;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    background: transparent !important;
 }
 
 .amalTugmasi.tahrirlash {
-    background-color: #007bff;
-    color: white;
+    color: #007bff !important;
 }
 
-.amalTugmasi.tahrirlash:hover {
-    background-color: #0056b3;
-}
 
 .amalTugmasi.ochirish {
-    background-color: #dc3545;
-    color: white;
+    color: #dc3545 !important;
 }
 
 .amalTugmasi.ochirish:hover {
-    background-color: #c82333;
+    color: #c82333;
 }
 
 .amalTugmasi:disabled {
@@ -139,32 +133,6 @@ button {
 
 .selectionButton:hover:not(.active) {
     background-color: #e9ecef;
-}
-
-/* Action Buttons (Edit and Delete) */
-.amalTugmasi {
-    padding: 6px;
-    margin: 0 4px;
-    font-size: 16px;
-    line-height: 1;
-}
-
-.amalTugmasi.tahrirlash {
-    background-color: #007bff;
-    color: white;
-}
-
-.amalTugmasi.tahrirlash:hover {
-    background-color: #0056b3;
-}
-
-.amalTugmasi.ochirish {
-    background-color: #dc3545;
-    color: white;
-}
-
-.amalTugmasi.ochirish:hover {
-    background-color: #c82333;
 }
 
 .amalTugmasi:disabled {
@@ -291,7 +259,7 @@ button {
 .xarajatGridTartibi {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    gap: 20px;
+    gap: 7px;
 }
 
 .formaBlokiKonteyner {
@@ -332,6 +300,14 @@ button {
     color: #333;
 }
 
+.formatDate-lu {
+    width: 80px;
+    border: 1px solid #ced4da;
+    border-radius: 7px;
+    padding: 0 4px;
+    height: 31.5px;
+}
+
 .formaKiritishMaydoni {
     width: 100%;
     padding: 8px;
@@ -356,8 +332,8 @@ button {
 
 .jadvalBlokiKonteyner {
     background: #fff;
-    padding: 20px;
     border-radius: 8px;
+    width: 100%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -383,16 +359,12 @@ button {
     color: #333;
 }
 
-.jadvalUyasigiMatn {
-    padding: 10px;
-    border-bottom: 1px solid #dee2e6;
-}
+
 
 .jadvalUyasigiactions {
-    padding: 10px;
-    border-bottom: 1px solid #dee2e6;
     display: flex;
-    gap: 5px;
+    margin-left: 11px;
+    gap: 8px;
 }
 
 .jadvalQatorElementi:hover {
@@ -437,11 +409,12 @@ button {
 
 .formaBlokiKonteyner,
 .jadvalBlokiKonteyner {
-    background-color: #ffffff;
-    padding: 24px;
+    /* background-color: #ed4545; */
+    padding: 15px 10px;
+    height: calc(100vh - 70px);
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 48, 73, 0.1);
-    border-left: 4px solid #2563eb;
+    border-left: 2px solid #2563eb;
     transition: transform 0.3s ease;
 }
 
@@ -449,14 +422,10 @@ button {
     border-left-color: #16a34a;
 }
 
-.formaBlokiKonteyner:hover,
-.jadvalBlokiKonteyner:hover {
-    transform: translateY(-4px);
-}
 
 .formaSarlavhaMatni,
 .jadvalSarlavhaMatni {
-    font-size: 28px;
+    font-size: 18px !important;
     font-weight: bold;
     color: #1e3a8a;
     margin-bottom: 16px;
@@ -603,9 +572,14 @@ button {
     transform: none;
 }
 
+.totalExpanses {
+    width: 100%;
+    height: 50px;
+}
+
 .jadvalOralganKonteyner {
     width: 100%;
-    height: calc(100vh - 170px);
+    height: calc(100vh - 145px);
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -641,8 +615,8 @@ button {
 }
 
 .jadvalUyasigi {
-    padding: 12px;
-    font-size: 12px;
+    padding: 12px 8px;
+    font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
     color: #6b7280;
@@ -662,9 +636,10 @@ button {
 }
 
 .jadvalUyasigiMatn {
-    padding: 12px;
-    font-size: 14px;
+    padding: 5px 9px;
+    font-size: 13px;
     color: #333333;
+    text-wrap: nowrap;
 }
 
 .maLumatYoqUyasigi {

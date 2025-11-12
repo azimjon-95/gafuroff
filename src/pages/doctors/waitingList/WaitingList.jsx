@@ -77,7 +77,6 @@ function WaitingList() {
         reactToPrintFn();
       }, 300);
     } catch (e) {
-      console.error("Update failed:", e);
       setErrorMessage("To'lov ma'lumotlarini yangilashda xatolik yuz berdi.");
       return;
     }
@@ -131,10 +130,10 @@ function WaitingList() {
       render: (services) =>
         services && services.length > 0
           ? services.map((s) => (
-              <div key={s._id}>
-                {s.name} - {s.price} so'm
-              </div>
-            ))
+            <div key={s._id}>
+              {s.name} - {s.price} so'm
+            </div>
+          ))
           : "-",
     },
     {
