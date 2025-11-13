@@ -44,7 +44,6 @@ const Registration = () => {
   const [isAppointmentChanged, setIsAppointmentChanged] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPaymentType, setSelectedPaymentType] = useState("naqt");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const reactToPrintFn = useReactToPrint({
     contentRef: contentRef,
@@ -125,9 +124,6 @@ const Registration = () => {
   };
 
   const handleModalOk = async () => {
-    if (isSubmitting) return; // oldini olish
-
-    setIsSubmitting(true); // tugmani bloklash
     try {
       const values = form.getFieldsValue();
       const cleanedServices = values.services.map((service) => {
@@ -504,7 +500,6 @@ const Registration = () => {
         onCancel={handleModalCancel}
         okText="OK"
         cancelText="Bekor qilish"
-        okButtonProps={{ disabled: isSubmitting, loading: isSubmitting }}
       >
         <Radio.Group
           value={selectedPaymentType}

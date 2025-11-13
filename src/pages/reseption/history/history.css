@@ -1180,29 +1180,6 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.date-range-container {
-    display: flex;
-    gap: 5px;
-}
-
-.date-range-container>input {
-    border-radius: 5px;
-    border: 2px solid rgba(174, 174, 174, 0.3);
-    padding: 4px 10px 3px 13px;
-    width: 100px;
-}
-
-.stat-cardhisFil {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    gap: 4px;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 1rem;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
 .stat-icon {
     width: 3.5rem;
     height: 3.5rem;
@@ -1234,13 +1211,12 @@
 }
 
 .filter-select {
-    padding: .2rem .5rem;
+    padding: .3rem .5rem;
     border: 2px solid rgba(174, 174, 174, 0.3);
-    border-radius: 6px;
+    border-radius: 8px;
     /* background: rgba(255, 255, 255, 0.9); */
     font-size: 1rem;
     color: #2d3748 !important;
-    width: 100%;
     cursor: pointer;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);

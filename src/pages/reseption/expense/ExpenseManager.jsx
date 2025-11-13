@@ -9,7 +9,6 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { AiOutlineCaretDown, AiOutlineCaretUp } from "react-icons/ai";
-import { NumberFormat } from "../../../hook/NumberFormat";
 import "./ExpenseManager.css";
 import {
   useGetExpensesQuery,
@@ -17,7 +16,6 @@ import {
   useUpdateExpenseMutation,
   useDeleteExpenseMutation,
 } from "../../../context/expenseApi";
-import { LuArrowLeftRight } from "react-icons/lu";
 import { chiqimOptions, kirimOptions } from "../../../utils/categories";
 import { Select as AntdSelect } from "antd";
 const { Option } = AntdSelect;
@@ -94,108 +92,16 @@ const ExpenseManager = () => {
   const [createExpense, { isLoading: isCreating }] = useCreateExpenseMutation();
   const [updateExpense, { isLoading: isUpdating }] = useUpdateExpenseMutation();
   const [deleteExpense, { isLoading: isDeleting }] = useDeleteExpenseMutation();
-
-  // Date states and defaults
-  const [dateStart, setDateStart] = useState("");
-  const [dateEnd, setDateEnd] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [filteredExpenses, setFilteredExpenses] = useState([]);
-
-  // Set default dates to today
-  useEffect(() => {
-    const today = new Date();
-    const dd = String(today.getDate()).padStart(2, "0");
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const yyyy = today.getFullYear();
-    const todayStr = `${dd}.${mm}.${yyyy}`;
-    setDateStart(todayStr);
-    setDateEnd(todayStr);
-  }, []);
-
-  // Parse DD.MM.YYYY to YYYY-MM-DD for backend
-  const parseDateToIso = (dateStr) => {
-    if (!dateStr) return null;
-    const parts = dateStr.split(".");
-    if (parts.length !== 3) return null;
-    const day = parseInt(parts[0]);
-    const month = parseInt(parts[1]) - 1;
-    const year = parseInt(parts[2]);
-    const date = new Date(year, month, day + 1);
-    if (isNaN(date.getTime())) return null;
-    return date.toISOString().split("T")[0];
-  };
-
   const {
     data: expenses,
     refetch,
     isLoading: isFetching,
-  } = useGetExpensesQuery({
-    startDate: parseDateToIso(dateStart),
-    endDate: parseDateToIso(dateEnd),
-  });
+  } = useGetExpensesQuery();
+  const [filteredExpenses, setFilteredExpenses] = useState([]);
 
-  // Compound filtering for type and category
   useEffect(() => {
-    let filtered = expenses?.innerData || [];
-    if (typeFilter !== "all") {
-      filtered = filtered.filter((exp) => exp.type === typeFilter);
-    }
-    if (categoryFilter !== "all") {
-      filtered = filtered.filter((exp) => exp.category === categoryFilter);
-    }
-    setFilteredExpenses(filtered);
-  }, [expenses, typeFilter, categoryFilter]);
-
-  // Unique categories from fetched data (date-filtered)
-  const allCategories = React.useMemo(
-    () => [...new Set(expenses?.innerData?.map((exp) => exp.category) || [])],
-    [expenses]
-  );
-
-  // Totals calculations
-  const totalIncome = React.useMemo(() => {
-    return filteredExpenses.filter((i) => i.type === "kirim").reduce((sum, exp) => sum + exp.amount, 0);
-  }, [filteredExpenses]);
-
-  const totalExpense = React.useMemo(() => {
-    return filteredExpenses.filter((i) => i.type === "chiqim").reduce((sum, exp) => sum + exp.amount, 0);
-  }, [filteredExpenses]);
-
-
-
-  const totalCash = React.useMemo(() => {
-    return filteredExpenses.filter((i) => i.paymentType === "naqt" && i.type !== "chiqim").reduce((sum, exp) => sum + exp.amount, 0);
-  }, [filteredExpenses]);
-
-  const totalCard = React.useMemo(() => {
-    return filteredExpenses.filter((i) => i.paymentType === "karta" && i.type !== "chiqim").reduce((sum, exp) => sum + exp.amount, 0);
-  }, [filteredExpenses]);
-
-  // Date formatting helper
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, "0");
-    const months = [
-      "Yanvar",
-      "Fevral",
-      "Mart",
-      "Aprel",
-      "May",
-      "Iyun",
-      "Iyul",
-      "Avgust",
-      "Sentabr",
-      "Oktabr",
-      "Noyabr",
-      "Dekabr",
-    ];
-    const month = months[date.getMonth()];
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    const seconds = date.getSeconds().toString().padStart(2, "0");
-    return `${day}-${month} / ${hours}:${minutes}:${seconds}`;
-  };
+    setFilteredExpenses(expenses?.innerData);
+  }, [expenses]);
 
   const handleInputChange = (e, field, value) => {
     if (field) {
@@ -312,6 +218,7 @@ const ExpenseManager = () => {
     setEditingExpenseId(null);
     setError("");
   };
+  console.log(filteredExpenses);
 
   return (
     <div className="xarajatBoshqaruvKonteyner">
@@ -332,31 +239,11 @@ const ExpenseManager = () => {
         {/* Forma */}
         <div className="formaBlokiKonteyner">
           <h2 className="formaSarlavhaMatni">
-            {/* <FaPlusCircle className="ikonaElementi" /> */}
+            <FaPlusCircle className="ikonaElementi" />
             {editingExpenseId
               ? "Xarajatni Tahrirlash"
               : "Yangi Xarajat Qo‘shish"}
           </h2>
-          <div className="totalExpanses">
-            <div className="totals-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', padding: '8px', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', borderRadius: '8px', fontSize: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-              <div className="total-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, color: '#28a745' }}>
-                <span style={{ fontWeight: 'bold' }}>Jami Kirim</span>
-                <span>{NumberFormat(totalIncome)} so'm</span>
-              </div>
-              <div className="total-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, color: '#dc3545' }}>
-                <span style={{ fontWeight: 'bold' }}>Jami Chiqim</span>
-                <span>{NumberFormat(totalExpense)} so'm</span>
-              </div>
-              <div className="total-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, color: '#007bff' }}>
-                <span style={{ fontWeight: 'bold' }}>Naqd</span>
-                <span>{NumberFormat(totalCash)} so'm</span>
-              </div>
-              <div className="total-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, color: '#6f42c1' }}>
-                <span style={{ fontWeight: 'bold' }}>Karta</span>
-                <span>{NumberFormat(totalCard)} so'm</span>
-              </div>
-            </div>
-          </div>
           <form onSubmit={handleSubmit} className="xarajatFormasi">
             <div className="formaGuruhiflexBox">
               <div className="formaGuruhiBlok">
@@ -364,16 +251,18 @@ const ExpenseManager = () => {
                 <div>
                   <button
                     type="button"
-                    className={`selectionButton ${formData.type === "kirim" ? "active" : ""
-                      }`}
+                    className={`selectionButton ${
+                      formData.type === "kirim" ? "active" : ""
+                    }`}
                     onClick={() => handleInputChange(null, "type", "kirim")}
                   >
                     Kirim (Daromad)
                   </button>
                   <button
                     type="button"
-                    className={`selectionButton ${formData.type === "chiqim" ? "active" : ""
-                      }`}
+                    className={`selectionButton ${
+                      formData.type === "chiqim" ? "active" : ""
+                    }`}
                     onClick={() => handleInputChange(null, "type", "chiqim")}
                   >
                     Chiqim (Xarajat)
@@ -386,8 +275,9 @@ const ExpenseManager = () => {
                 <div>
                   <button
                     type="button"
-                    className={`selectionButton ${formData.paymentType === "naqt" ? "active" : ""
-                      }`}
+                    className={`selectionButton ${
+                      formData.paymentType === "naqt" ? "active" : ""
+                    }`}
                     onClick={() =>
                       handleInputChange(null, "paymentType", "naqt")
                     }
@@ -396,8 +286,9 @@ const ExpenseManager = () => {
                   </button>
                   <button
                     type="button"
-                    className={`selectionButton ${formData.paymentType === "karta" ? "active" : ""
-                      }`}
+                    className={`selectionButton ${
+                      formData.paymentType === "karta" ? "active" : ""
+                    }`}
                     onClick={() =>
                       handleInputChange(null, "paymentType", "karta")
                     }
@@ -473,8 +364,8 @@ const ExpenseManager = () => {
                 {isCreating || isUpdating
                   ? "Yuklanmoqda..."
                   : editingExpenseId
-                    ? "Yangilash"
-                    : "Xarajat Yaratish"}
+                  ? "Yangilash"
+                  : "Xarajat Yaratish"}
               </button>
               {editingExpenseId && (
                 <button
@@ -501,30 +392,22 @@ const ExpenseManager = () => {
             }}
           >
             <div>
-              Xarajatlar Ro‘yxati
+              <FaList className="ikonaElementi" /> Xarajatlar Ro‘yxati
             </div>
-            <div style={{ display: "flex", alignItems: "center", fontSize: "18px", gap: "6px" }}>
-              {/* Date inputs: Start Date */}
-              <input
-                type="text"
-                value={dateStart}
-                onChange={(e) => setDateStart(e.target.value)}
-                placeholder="DD.MM.YYYY"
-                className="formatDate-lu"
-              />
-              <LuArrowLeftRight />
-              <input
-                type="text"
-                value={dateEnd}
-                onChange={(e) => setDateEnd(e.target.value)}
-                placeholder="DD.MM.YYYY"
-                className="formatDate-lu"
-              />
+            <div style={{ display: "flex", gap: "10px" }}>
               {/* 1-select: Kirim/Chiqim */}
               <AntdSelect
-                value={typeFilter}
-                style={{ width: 150 }}
-                onChange={setTypeFilter}
+                defaultValue="all"
+                style={{ width: 180 }}
+                onChange={(value) => {
+                  if (value === "all") {
+                    setFilteredExpenses(expenses?.innerData);
+                  } else {
+                    setFilteredExpenses(
+                      expenses?.innerData?.filter((exp) => exp.type === value)
+                    );
+                  }
+                }}
               >
                 <Option value="all">Barchasi</Option>
                 <Option value="kirim">Kirim (Daromad)</Option>
@@ -533,13 +416,25 @@ const ExpenseManager = () => {
 
               {/* 2-select: Kategoriya bo‘yicha */}
               <AntdSelect
-                value={categoryFilter}
-                style={{ width: 160 }}
-                onChange={setCategoryFilter}
+                defaultValue="all"
+                style={{ width: 180 }}
+                onChange={(value) => {
+                  if (value === "all") {
+                    setFilteredExpenses(expenses?.innerData);
+                  } else {
+                    setFilteredExpenses(
+                      expenses?.innerData?.filter(
+                        (exp) => exp.category === value
+                      )
+                    );
+                  }
+                }}
               >
                 <Option value="all">Barchasi</Option>
-                {allCategories.map((cat) => (
-                  <Option key={cat} value={cat}>
+                {[
+                  ...new Set(filteredExpenses?.map((exp) => exp.category)), // unique kategoriya
+                ].map((cat, idx) => (
+                  <Option key={idx} value={cat}>
                     {cat}
                   </Option>
                 ))}
@@ -592,7 +487,7 @@ const ExpenseManager = () => {
                           )}
                         </td>
                         <td className="jadvalUyasigiMatn">{expense.name}</td>
-                        <td className="jadvalUyasigiMatn">{NumberFormat(expense.amount)} so'm</td>
+                        <td className="jadvalUyasigiMatn">{expense.amount}</td>
                         <td className="jadvalUyasigiMatn">
                           {expense.category}
                         </td>
@@ -600,7 +495,7 @@ const ExpenseManager = () => {
                           {expense.paymentType}
                         </td>
                         <td className="jadvalUyasigiMatn">
-                          {formatDate(expense.createdAt)}
+                          {new Date(expense.createdAt).toLocaleDateString()}
                         </td>
                         <td>
                           <span className="jadvalUyasigiactions">

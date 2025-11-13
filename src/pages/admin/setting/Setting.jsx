@@ -158,6 +158,8 @@ const ClinicManagement = () => {
   // Handle form submission
   const handleSubmit = useCallback(
     async (values) => {
+      console.log(fileList);
+
       let logoUrl = clinicToEdit?.logo || "";
       if (fileList?.[0]?.originFileObj) {
         logoUrl = await handleUpload({

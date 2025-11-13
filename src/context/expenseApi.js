@@ -12,12 +12,7 @@ export const expenseApi = api.injectEndpoints({
     }),
     getExpenses: builder.query(
       {
-        query: ({ startDate, endDate }) => {
-          const params = new URLSearchParams();
-          if (startDate) params.append("startDate", startDate);
-          if (endDate) params.append("endDate", endDate);
-          return `/expense/all${params.toString() ? '?' + params.toString() : ''}`;
-        },
+        query: () => "/expense/all",
       },
       {
         providesTags: ["Expenses"],

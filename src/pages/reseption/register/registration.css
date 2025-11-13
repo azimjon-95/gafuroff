@@ -40,10 +40,6 @@
     padding: 0 4px;
 }
 
-.registration-container::-webkit-scrollbar {
-    height: 4px;
-}
-
 .registration-container:first-child {
     width: 70%;
 }

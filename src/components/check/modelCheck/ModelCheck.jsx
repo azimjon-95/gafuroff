@@ -60,7 +60,7 @@ function ModelCheck({ contentRef, data: story }) {
   const { date: currentDate, time: currentTime } =
     getCurrentUzbekistanDateTime();
 
-
+  console.log(story);
 
   return (
     <div ref={contentRef} className="receipt-container-component">

@@ -70,6 +70,7 @@ function Header() {
 
     } catch (error) {
       toast.error("Chiqishda xatolik yuz berdi!");
+      console.error("Logout error:", error);
     } finally {
       setIsModalOpen(false);
       setIsLoggingOut(false);
