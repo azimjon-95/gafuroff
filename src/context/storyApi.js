@@ -123,9 +123,18 @@ export const storyApi = api.injectEndpoints({
     //=======================
     // New endpoints for the requested routes
     getAllPatientsStory: builder.query({
-      query: () => `/patientsStory`,
+      query: ({ searchTerm = '', filterStatus = 'all', startDate, endDate }) => {
+        const params = new URLSearchParams({
+          ...(searchTerm && { searchTerm }),
+          ...(filterStatus !== 'all' && { filterStatus }),
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
+        });
+        return `/patientsStory${params.toString() ? `?${params.toString()}` : ''}`;
+      },
       providesTags: ["PatientsStory"],
     }),
+
     getPatientStoryById: builder.query({
       query: (patientId) => `/patientsStory/${patientId}`,
       providesTags: (result, error, patientId) => [
