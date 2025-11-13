@@ -1,154 +1,90 @@
-import React, { useState, useMemo } from "react";
+// Frontend: Updated MedicalDashboard with Skeleton Loader
+import React, { useState, useMemo, useEffect } from "react";
 import {
   User,
-  Calendar,
-  Stethoscope,
   CreditCard,
   Heart,
   Activity,
-  Filter,
 } from "lucide-react";
 import { useSelector } from "react-redux";
+import { PhoneNumberFormat } from "../../../hook/NumberFormat";
+import { capitalizeFirstLetter } from "../../../hook/CapitalizeFirstLitter";
 import PatientDetailsView from "./PatientDetailsView";
 import { useGetAllPatientsStoryQuery } from "../../../context/storyApi";
+import HistorySkeleton from "./skeleton/Skeleton"; // Import skeleton komponent
 import "./history.css";
+import "./skeleton/style.css"; // Import skeleton styles
 import moment from "moment";
-import {
-  useGetPatientServicesByPatientIdQuery,
-  useGetRoomServicesStoryQuery,
-} from "../../../context/choosedRoomServicesApi";
 
 const MedicalDashboard = ({ patientId, setViewHistory }) => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
   const { searchQuery: searchTerm } = useSelector((state) => state.search);
-  const { data, error, isLoading } = useGetAllPatientsStoryQuery();
 
-  // Find the patient by patientId from props if provided
+  // Date range state - default to current month (1st to last day)
+  const now = moment();
+  const [startDate, setStartDate] = useState(now.startOf('month').format('YYYY-MM-DD'));
+  const [endDate, setEndDate] = useState(now.endOf('month').format('YYYY-MM-DD'));
+
+  console.log(startDate, endDate);
+  // Single query with params including dates
+  const { data, error, isLoading } = useGetAllPatientsStoryQuery(
+    { searchTerm, filterStatus, startDate, endDate },
+    { skip: false }
+  );
+
+  // Update initial dates if needed (e.g., on mount)
+  useEffect(() => {
+    // Default set if not provided
+    if (!startDate || !endDate) {
+      const currentNow = moment();
+      setStartDate(currentNow.startOf('month').format('YYYY-MM-DD'));
+      setEndDate(currentNow.endOf('month').format('YYYY-MM-DD'));
+    }
+  }, []);
+
   const initialPatient = useMemo(() => {
     if (!patientId || !data?.success || !data?.data) return null;
     return data.data.find((patient) => patient._id === patientId) || null;
   }, [data, patientId]);
 
-  // Set selected patient only if patientId is provided and found
   useMemo(() => {
     if (initialPatient) {
       setSelectedPatient(initialPatient);
     }
   }, [initialPatient]);
 
-  const { data: patientServicesData } = useGetPatientServicesByPatientIdQuery(
-    selectedPatient?.stories?.[0]?.patientId?._id || "",
-    {
-      skip: !selectedPatient,
-    }
-  );
-
-  const { data: roomServicesData } = useGetRoomServicesStoryQuery(
-    selectedPatient?.stories?.[selectedPatient?.stories?.length - 1]?._id || "",
-    "ew",
-    {
-      skip: !selectedPatient,
-    }
-  );
-
-  // Process and optimize the API data
   const patientsData = useMemo(() => {
-    if (!data?.success || !data?.data) return [];
-
-    return data.data.map((patient) => {
-      const unpaidStoriesAmount = (patient.stories || [])
-        .filter((story) => !story.payment_status)
-        .reduce((sum, story) => sum + (story.payment_amount || 0), 0);
-
-      const unpaidRoomDaysAmount = (patient.roomStories || [])
-        .flatMap((room) => room.paidDays || [])
-        .filter((day) => !day.isPaid)
-        .reduce((sum, day) => sum + (day.price || 0), 0);
-
-      const totalUnpaidAmount = unpaidStoriesAmount + unpaidRoomDaysAmount;
-
-      const hasActiveRoomStory = (patient.roomStories || []).some(
-        (room) => room.active
-      );
-      const hasUnpaidStories = (patient.stories || []).some(
-        (story) => !story.payment_status
-      );
-      const hasUnpaidRoomDays = (patient.roomStories || []).some((room) =>
-        (room.paidDays || []).some((day) => !day.isPaid)
-      );
-
-      const lastStoryDate =
-        patient.stories?.length > 0
-          ? patient.stories[patient.stories.length - 1].createdAt
-          : null;
-      const lastRoomDate =
-        patient.roomStories?.length > 0
-          ? patient.roomStories[patient.roomStories.length - 1].createdAt
-          : null;
-      const lastVisit = lastStoryDate || lastRoomDate || patient.createdAt;
-
-      return {
-        ...patient,
-        fullName: `${patient.firstname || ""} ${patient.lastname || ""}`.trim(),
-        hasActiveRoomStory,
-        hasUnpaidRoomDays,
-        hasUnpaidStories,
-        lastVisit,
-        totalUnpaidAmount,
-        treating:
-          patient.treating ||
-          hasActiveRoomStory ||
-          (hasUnpaidStories &&
-            new Date(lastVisit) >
-            new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
-        debtor:
-          patient.debtor ||
-          hasUnpaidRoomDays ||
-          hasUnpaidStories ||
-          totalUnpaidAmount > 0,
-      };
-    });
+    return data?.success ? data.data : [];
   }, [data]);
 
-  const filteredPatients = useMemo(() => {
-    if (!patientsData.length) return [];
+  const filteredPatients = patientsData;
 
-    return patientsData.filter((patient) => {
-      const matchesSearch =
-        patient.firstname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.lastname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.idNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.phone.includes(searchTerm) ||
-        patient.fullName.toLowerCase().includes(searchTerm.toLowerCase());
-
-      const matchesFilter =
-        filterStatus === "all" ||
-        (filterStatus === "treating" && patient.treating) ||
-        (filterStatus === "debtor" && patient.debtor) ||
-        (filterStatus === "completed" && !patient.treating && !patient.debtor);
-
-      return matchesSearch && matchesFilter;
-    });
-  }, [patientsData, searchTerm, filterStatus]);
+  const stats = useMemo(() => data?.stats || {}, [data]);
 
   const formatCurrency = (amount) => {
     if (!amount || amount === 0) return "0 so'm";
     return new Intl.NumberFormat("uz-UZ").format(amount) + " so'm";
   };
 
-  // Show loading state
+  // Handle date change - refetch will happen via query params
+  const handleDateChange = (type, value) => {
+    if (type === 'start') {
+      setStartDate(value);
+    } else {
+      setEndDate(value);
+    }
+  };
+
+  // Show skeleton loader while loading
   if (isLoading) {
     return (
       <div className="history-dashboard">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-        </div>
+        <HistorySkeleton />
       </div>
     );
   }
 
-  // Show error state
   if (error) {
     return (
       <div className="history-dashboard">
@@ -160,24 +96,7 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
       </div>
     );
   }
-  const qarzdorlar = patientsData?.reduce((acc, patient) => {
-    // har bir patient roomStories ni tekshiramiz
-    const hasDebt = patient?.roomStories?.some(story => {
-      // faqat active bo'lgan stories
-      if (!story.active) return false;
 
-      // agar paidDays ichida isPaid === false bo'lsa qarzdor
-      return story.paidDays?.some(day => day.isPaid === false);
-    });
-
-    if (hasDebt) {
-      acc.push(patient); // qarzdor bo'lsa qo'shamiz
-    }
-
-    return acc;
-  }, []);
-
-  // If patientId is provided but no patient is found, show error
   if (patientId && !selectedPatient) {
     return (
       <div className="history-dashboard">
@@ -190,8 +109,6 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
     );
   }
 
-
-
   return (
     <div className="history-dashboard">
       {!selectedPatient ? (
@@ -203,66 +120,71 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
                 <div>
                   <h1>Tibbiy Hujjatlar Tizimi</h1>
                   <p>Bemorlar tarixi va ma'lumotlar bazasi</p>
-                  <div className="filter-container">
-                    <Filter className="filter-icon" />
-                    <select
-                      value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value)}
-                      className="filter-select"
-                    >
-                      <option value="all">
-                        Barcha bemorlar ({patientsData.length})
-                      </option>
-                      <option value="treating">
-                        Davolanmoqda (
-                        {patientsData.filter((p) => p.treating).length})
-                      </option>
-                      <option value="debtor">
-                        Qarzdorlar (
-                        {patientsData.filter((p) => p.debtor).length})
-                      </option>
-                      <option value="completed">
-                        Tugallangan (
-                        {
-                          patientsData.filter((p) => !p.treating && !p.debtor)
-                            .length
-                        }
-                        )
-                      </option>
-                    </select>
-                  </div>
                 </div>
               </div>
               <div className="header-stats">
                 <div className="stat-cardhis">
                   <User className="stat-icon" />
                   <div>
-                    <span className="stat-number">{patientsData.length}</span>
+                    <span className="stat-number">{stats.total || 0}</span>
                     <span className="stat-label">Jami bemorlar</span>
                   </div>
                 </div>
                 <div className="stat-cardhis">
                   <Heart className="stat-icon treating" />
                   <div>
-                    <span className="stat-number">
-                      {patientsData.filter((p) => p.roomStories[0]?.active).length}
-                    </span>
+                    <span className="stat-number">{stats.treating || 0}</span>
                     <span className="stat-label">Davolanmoqda</span>
                   </div>
                 </div>
                 <div className="stat-cardhis">
                   <CreditCard className="stat-icon debtor" />
                   <div>
-                    <span className="stat-number">
-                      {qarzdorlar.length}
-                    </span>
+                    <span className="stat-number">{stats.qarzdorlar || 0}</span>
                     <span className="stat-label">Qarzdorlar</span>
+                  </div>
+                </div>
+                <div className="stat-cardhisFil">
+                  <div className="date-range-container">
+                    <input
+                      type="text"
+                      placeholder="Boshlanish sanasi (YYYY-MM-DD)"
+                      value={startDate}
+                      onChange={(e) => handleDateChange('start', e.target.value)}
+                      className="date-input"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Tugash sanasi (YYYY-MM-DD)"
+                      value={endDate}
+                      onChange={(e) => handleDateChange('end', e.target.value)}
+                      className="date-input"
+                    />
+                  </div>
+                  <div className="filter-container">
+                    <select
+                      value={filterStatus}
+                      onChange={(e) => setFilterStatus(e.target.value)}
+                      className="filter-select"
+                    >
+                      <option value="all">
+                        Barcha bemorlar ({stats.total || 0})
+                      </option>
+                      <option value="treating">
+                        Davolanmoqda ({stats.treating || 0})
+                      </option>
+                      <option value="debtor">
+                        Qarzdorlar ({stats.debtors || 0})
+                      </option>
+                      <option value="completed">
+                        Tugallangan ({stats.completed || 0})
+                      </option>
+                    </select>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <div className="patients-list">
             {filteredPatients.length === 0 ? (
               <div className="no-patients">
@@ -285,7 +207,7 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredPatients.map((patient) => (
+                    {(filteredPatients?.slice().reverse() || []).map((patient) => (
                       <tr
                         key={patient._id}
                         className={`patient-row ${patient.treating ? "treating" : ""} ${patient.debtor ? "debtor" : ""}`}
@@ -293,9 +215,10 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
                       >
                         <td>
                           <div className="patient-avatar"></div>
-                          {patient.firstname} {patient.lastname}</td>
+                          {capitalizeFirstLetter(patient.firstname)} {capitalizeFirstLetter(patient.lastname)}
+                        </td>
                         <td>{patient.idNumber}</td>
-                        <td>{patient.phone}</td>
+                        <td>{PhoneNumberFormat(patient.phone)}</td>
                         <td>{patient.address}</td>
                         <td>
                           {patient.year
@@ -314,12 +237,10 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
                             {patient.totalUnpaidAmount > 0 ? formatCurrency(patient.totalUnpaidAmount) : "-"}
                           </span>
                         </td>
-
                         <td>{moment(patient.lastVisit).format("DD.MM.YYYY")}</td>
                         <td>{patient.stories?.length || 0}</td>
                       </tr>
                     ))}
-
                   </tbody>
                 </table>
               </div>
@@ -332,7 +253,8 @@ const MedicalDashboard = ({ patientId, setViewHistory }) => {
           patientId={patientId}
           patient={selectedPatient}
           patientServicesData={
-            patientServicesData?.innerData || roomServicesData?.innerData || []
+            selectedPatient?.choosedRoomServices ||
+            selectedPatient?.stories?.[selectedPatient.stories.length - 1]?.roomServices || []
           }
           setSelectedPatient={setSelectedPatient}
         />
