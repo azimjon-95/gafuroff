@@ -40,13 +40,38 @@ const { Title } = Typography;
 const { Option } = Select;
 
 const NewRegistrations = () => {
+
+
+  const [viewStatus, setViewStatus] = useState("all");
+  const [selectedDate, setSelectedDate] = useState(moment());
+  const [selectedSpecialization, setSelectedSpecialization] = useState("Barchasi");
   const {
     data: allStories,
     isLoading: isLoadingAllStories,
     refetch,
-    error,
-  } = useGetAllTodaysQuery();
-  console.log(error);
+    error
+  } = useGetAllTodaysQuery({
+    date: selectedDate ? selectedDate.format("YYYY-MM-DD") : undefined,
+    view: viewStatus,
+  });
+
+  const filteredData = allStories?.innerData?.stories?.filter((i) => {
+    if (selectedSpecialization === "Barchasi") return true;
+    return i.doctorId.specialization.includes(selectedSpecialization);
+  }) || [];
+
+  const counts = allStories?.innerData?.counts || {
+    all: 0,
+    korilgan: 0,
+    korilmagan: 0,
+  };
+
+
+  const viewOptions = [
+    { value: "all", label: `Barchasi – ${counts.all}` },
+    { value: "true", label: `Ko‘rilganlar – ${counts.korilgan}` },
+    { value: "false", label: `Ko‘rilmaganlar – ${counts.korilmagan}` },
+  ];
 
   const [updateRedirectedPatient] = useUpdateRedirectedPatientMutation();
   const [deleteStory] = useDeleteStoryMutation();
@@ -58,9 +83,6 @@ const NewRegistrations = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [selectedPaymentType, setSelectedPaymentType] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [selectedSpecialization, setSelectedSpecialization] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(moment());
-  const [dateError, setDateError] = useState(null);
   const [dateInput, setDateInput] = useState(moment().format("DD-MM-YYYY"));
   const [deleteUnconfirmedAppointments, { isLoading: isDeleting }] =
     useDeleteUnconfirmedAppointmentsMutation();
@@ -229,41 +251,11 @@ const NewRegistrations = () => {
 
   const specializations = useMemo(() => {
     const specs = new Set(
-      allStories?.innerData
-        ?.map((record) => record.doctorId?.specialization)
+      allStories?.innerData?.stories?.map((record) => record.doctorId?.specialization)
         .filter(Boolean)
     );
     return ["Barchasi", ...specs];
   }, [allStories]);
-
-  const filteredData = useMemo(() => {
-    let result = allStories?.innerData
-      ? [...allStories.innerData].sort(
-          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-        )
-      : [];
-
-    if (selectedSpecialization && selectedSpecialization !== "Barchasi") {
-      result = result.filter(
-        (record) => record.doctorId?.specialization === selectedSpecialization
-      );
-    }
-
-    if (selectedDate && selectedDate.isValid()) {
-      const startOfSelectedDay = moment(selectedDate).startOf("day");
-      const endOfSelectedDay = moment(selectedDate).endOf("day");
-      result = result.filter((record) =>
-        moment(record.createdAt).isBetween(
-          startOfSelectedDay,
-          endOfSelectedDay,
-          null,
-          "[]"
-        )
-      );
-    }
-
-    return result;
-  }, [allStories, selectedSpecialization, selectedDate]);
 
   const columns = useMemo(() => {
     const baseColumns = [
@@ -279,8 +271,7 @@ const NewRegistrations = () => {
         title: "Bemor ismi",
         key: "patient_name",
         render: (_, record) =>
-          `${record.patientId?.firstname || "N/A"} ${
-            record.patientId?.lastname || "N/A"
+          `${record.patientId?.firstname || "N/A"} ${record.patientId?.lastname || "N/A"
           }`,
         width: 150,
       },
@@ -497,6 +488,12 @@ const NewRegistrations = () => {
               </Option>
             ))}
           </Select>
+          <Select
+            style={{ width: 160 }}
+            value={viewStatus}
+            onChange={setViewStatus}
+            options={viewOptions}
+          />
           <input
             style={{ width: 125 }}
             type="date"
@@ -508,9 +505,7 @@ const NewRegistrations = () => {
             }}
             className="date-inputtab"
           />
-          {dateError && (
-            <p style={{ color: "red", fontSize: "12px" }}>{dateError}</p>
-          )}
+
         </div>
 
         <Popconfirm
@@ -522,14 +517,13 @@ const NewRegistrations = () => {
           okButtonProps={{ loading: isDeleting }}
           overlayStyle={{ width: 400 }}
         >
-          <button
+          <Button
             type="danger"
-            loading={isDeleting}
-            style={{ fontSize: "20px", borderColor: "red" }}
+            loading={isDeleting} // ✅ Ant Design Buttonda ishlaydi
+            style={{ fontSize: "20px" }}
             className="no-print"
-          >
-            <MdDeleteSweep />
-          </button>
+            icon={<MdDeleteSweep />}
+          />
         </Popconfirm>
       </div>
 

@@ -4,8 +4,6 @@ import "./css/printStyle.css";
 
 const PrintCheckList = ({ ref, data, result }) => {
   const [patientData, setPatientData] = useState({});
-  console.log("PrintCheckList data:", data);
-  console.log("PrintCheckList result:", result);
 
   useEffect(() => {
     if (data) {
@@ -58,7 +56,7 @@ const PrintCheckList = ({ ref, data, result }) => {
   };
 
   const analysisGroups = groupAnalyses(results);
-  console.log(patientData);
+
   return (
     <div ref={ref} className="lib-laboratory-report">
       {/* Header */}

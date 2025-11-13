@@ -4,7 +4,7 @@ import { LiaMoneyBillWaveSolid } from "react-icons/lia";
 import { FaUsers } from "react-icons/fa6";
 import { TbFilePercent } from "react-icons/tb";
 import { GiTakeMyMoney } from "react-icons/gi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./style.css"; // Importing styles for the component
 import { FaBed } from "react-icons/fa";
 const NumberFormat = (value) => {

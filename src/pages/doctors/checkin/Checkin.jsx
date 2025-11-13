@@ -40,7 +40,6 @@ const UZBEK_MONTHS = [
   "Dekabr",
 ];
 
-
 // Utility function to calculate BMI
 const calculateBMI = (height, weight) => {
   if (!height || !weight) return null;
@@ -168,7 +167,9 @@ const Checkin = () => {
       refetch();
     } catch (err) {
       toast.error(
-        `Xatolik yuz berdi: ${err?.data?.message || "Ma'lumotlarni saqlashda xato"}`,
+        `Xatolik yuz berdi: ${
+          err?.data?.message || "Ma'lumotlarni saqlashda xato"
+        }`,
         {
           position: "top-right",
           autoClose: 5000,
@@ -179,39 +180,33 @@ const Checkin = () => {
 
   // Memoized today's and past patients
   const todaysPatients = useMemo(() => {
-    return data?.innerData?.patients?.filter((p) =>
-      moment(p.createdAt).isSame(moment(), "day")
-    ) || [];
+    return (
+      data?.innerData?.patients?.filter((p) =>
+        moment(p.createdAt).isSame(moment(), "day")
+      ) || []
+    );
   }, [data]);
 
   const pastPatients = useMemo(() => {
-    return data?.innerData?.patients?.filter(
-      (p) => !moment(p.createdAt).isSame(moment(), "day")
-    ) || [];
+    return (
+      data?.innerData?.patients?.filter(
+        (p) => !moment(p.createdAt).isSame(moment(), "day")
+      ) || []
+    );
   }, [data]);
 
   // Memoized sorted patients based on showPast
   const sortedPatients = useMemo(() => {
     const patientsToSort = showPast ? pastPatients : todaysPatients;
-    return patientsToSort.slice().sort((a, b) => a.order_number - b.order_number);
+    return patientsToSort
+      .slice()
+      .sort((a, b) => a.order_number - b.order_number);
   }, [showPast, todaysPatients, pastPatients]);
 
-  // Memoized sorted patients based on showPast
-  const sortedPatientsLength = useMemo(() => {
-    const patientsToSort = showPast ? todaysPatients : pastPatients;
-    return patientsToSort.slice().sort((a, b) => a.order_number - b.order_number).length;
-  }, [showPast, todaysPatients, pastPatients]);
+  let sortedPatientsLength = showPast
+    ? data?.innerData?.todayViewedCount
+    : data?.innerData?.todayUnviewedCount;
 
-  // Computed counts for displayed patients
-  const unviewedCount = useMemo(() => {
-    return sortedPatients.filter((p) => !p.view).length;
-  }, [sortedPatients]);
-
-  const viewedCount = useMemo(() => {
-    return sortedPatients.filter((p) => p.view).length;
-  }, [sortedPatients]);
-
-  // Function to get initials from the doctor's name
   // Function to get initials from the doctor's name
   const getInitials = (name) => {
     if (!name) return "";
@@ -279,13 +274,17 @@ const Checkin = () => {
               <Stethoscope className="header-icon" aria-hidden="true" />
               <div>
                 <h1>Doktor - {doctorInitials}</h1>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                >
                   <Switch
                     checked={showPast}
                     onChange={(checked) => setShowPast(checked)}
                     checkedChildren="Bugungilar"
                     unCheckedChildren="Kutilyotganlar"
-                    style={{ backgroundColor: showPast ? "#1890ff" : "#d9d9d9" }}
+                    style={{
+                      backgroundColor: showPast ? "#1890ff" : "#d9d9d9",
+                    }}
                   />
                   <p>{sortedPatientsLength}-ta</p>
                 </div>
@@ -297,14 +296,14 @@ const Checkin = () => {
             <div className="stat-card">
               <Users className="stat-icon waiting" aria-hidden="true" />
               <div>
-                <h3>{unviewedCount}</h3>
+                <h3>{data?.innerData?.todayUnviewedCount}</h3>
                 <p>Kutayotgan</p>
               </div>
             </div>
             <div className="stat-card">
               <CheckCircle className="stat-icon completed" aria-hidden="true" />
               <div>
-                <h3>{viewedCount}</h3>
+                <h3>{data?.innerData?.todayViewedCount}</h3>
                 <p>Qabul qilingan</p>
               </div>
             </div>
@@ -315,10 +314,7 @@ const Checkin = () => {
           <table>
             <thead>
               <tr>
-                {
-                  !showPast &&
-                  <th className="table-header">№</th>
-                }
+                {!showPast && <th className="table-header">№</th>}
                 <th className="table-header">Sana</th>
                 <th className="table-header">Bemorning ismi</th>
                 <th className="table-header">Yoshi</th>
@@ -334,16 +330,17 @@ const Checkin = () => {
                   key={patient._id}
                   className={`patient-row ${patient.view ? "completed" : ""}`}
                 >
-                  {moment(patient.createdAt).isSame(moment(), "day") &&
+                  {moment(patient.createdAt).isSame(moment(), "day") && (
                     <td className="order-number">{patient.order_number}</td>
-                  }
+                  )}
                   <td>
                     {moment(patient.createdAt).isSame(moment(), "day") ? (
                       <p style={{ color: "green", fontWeight: "bold" }}>
                         {moment(patient.createdAt).format("HH:mm")}
                       </p>
                     ) : (
-                      `${moment(patient.createdAt).format("D")} ${UZBEK_MONTHS[moment(patient.createdAt).month()]
+                      `${moment(patient.createdAt).format("D")} ${
+                        UZBEK_MONTHS[moment(patient.createdAt).month()]
                       } ${moment(patient.createdAt).format("HH:mm")}`
                     )}
                   </td>
@@ -352,7 +349,9 @@ const Checkin = () => {
                       <div>
                         <strong>{patient.patientId.name}</strong>
                         <br />
-                        <small>{PhoneNumberFormat(patient.patientId.phone)}</small>
+                        <small>
+                          {PhoneNumberFormat(patient.patientId.phone)}
+                        </small>
                       </div>
                     </div>
                   </td>
@@ -366,9 +365,9 @@ const Checkin = () => {
                   </td>
                   <td className="medical-info">
                     {patient?.patientId?.height &&
-                      patient?.patientId?.weight &&
-                      patient?.patientId?.bmi &&
-                      patient?.patientId?.bloodGroup ? (
+                    patient?.patientId?.weight &&
+                    patient?.patientId?.bmi &&
+                    patient?.patientId?.bloodGroup ? (
                       <div className="medical-info-container">
                         <div className="bmi-info">
                           <Scale size={12} color="#6b7280" aria-hidden="true" />
@@ -398,7 +397,6 @@ const Checkin = () => {
                       <button
                         onClick={() => handleAddMedicalInfo(patient)}
                         className="add-medical-btn"
-
                         aria-label={`Tibbiy ma'lumot qo'shish ${patient.patientId.name}`}
                       >
                         <Plus size={14} aria-hidden="true" />
@@ -426,7 +424,6 @@ const Checkin = () => {
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       </div>
@@ -472,7 +469,9 @@ const Checkin = () => {
                   placeholder="Masalan: 175"
                   className="form-input"
                   aria-invalid={!!formErrors.height}
-                  aria-describedby={formErrors.height ? "height-error" : undefined}
+                  aria-describedby={
+                    formErrors.height ? "height-error" : undefined
+                  }
                 />
                 {formErrors.height && (
                   <span id="height-error" className="form-error">
@@ -494,7 +493,9 @@ const Checkin = () => {
                   placeholder="Masalan: 70"
                   className="form-input"
                   aria-invalid={!!formErrors.weight}
-                  aria-describedby={formErrors.weight ? "weight-error" : undefined}
+                  aria-describedby={
+                    formErrors.weight ? "weight-error" : undefined
+                  }
                 />
                 {formErrors.weight && (
                   <span id="weight-error" className="form-error">
@@ -514,7 +515,9 @@ const Checkin = () => {
                   onChange={handleInputChange}
                   className="form-select"
                   aria-invalid={!!formErrors.bloodGroup}
-                  aria-describedby={formErrors.bloodGroup ? "bloodGroup-error" : undefined}
+                  aria-describedby={
+                    formErrors.bloodGroup ? "bloodGroup-error" : undefined
+                  }
                 >
                   <option value="">Qon guruhini tanlang</option>
                   {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(

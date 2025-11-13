@@ -36,7 +36,6 @@ const Dashboard = () => {
   );
   const data = dashboardData?.innerData || [];
 
-
   // Function to format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("uz-UZ", {
@@ -44,6 +43,12 @@ const Dashboard = () => {
       currency: "UZS",
       minimumFractionDigits: 0,
     }).format(amount);
+  };
+
+  // Function to format date as "DD-MMM / HH:mm:ss" (e.g., "12-Mart / 12:34:00")
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    return moment(dateString).format("DD-MMM / HH:mm:ss");
   };
 
   const kirim = data?.kirim_chiqimChart?.kirim || [];
@@ -69,8 +74,9 @@ const Dashboard = () => {
                   {data?.bemorlarOqimi?.thisMonth?.toLocaleString() || 0}
                 </p>
                 <p
-                  className={`complex-stats-trend-${data?.bemorlarOqimi?.prevMonth >= 0 ? "green" : "red"
-                    }`}
+                  className={`complex-stats-trend-${
+                    data?.bemorlarOqimi?.prevMonth >= 0 ? "green" : "red"
+                  }`}
                 >
                   {data?.bemorlarOqimi?.prevMonth >= 0 ? "+" : ""}
                   {data?.bemorlarOqimi?.prevMonth}% o'tgan oyga nisbatan
@@ -88,10 +94,11 @@ const Dashboard = () => {
                   {data?.yotqizilganBemorlar?.thisMonth || 0}
                 </p>
                 <p
-                  className={`complex-stats-trend-${data?.yotqizilganBemorlar?.percentChange >= 0
+                  className={`complex-stats-trend-${
+                    data?.yotqizilganBemorlar?.percentChange >= 0
                       ? "green"
                       : "red"
-                    }`}
+                  }`}
                 >
                   {data?.yotqizilganBemorlar?.percentChange >= 0 ? "+" : ""}
                   {data?.yotqizilganBemorlar?.percentChange}% o'tgan oyga
@@ -110,8 +117,9 @@ const Dashboard = () => {
                   {formatCurrency(data?.kirim?.thisMonth || 0)}
                 </p>
                 <p
-                  className={`complex-stats-trend-${data?.kirim?.percentChange >= 0 ? "green" : "red"
-                    }`}
+                  className={`complex-stats-trend-${
+                    data?.kirim?.percentChange >= 0 ? "green" : "red"
+                  }`}
                 >
                   {data?.kirim?.percentChange >= 0 ? "+" : ""}
                   {data?.kirim?.percentChange}% o'tgan oyga nisbatan
@@ -129,8 +137,9 @@ const Dashboard = () => {
                   {formatCurrency(data?.chiqim?.thisMonth || 0)}
                 </p>
                 <p
-                  className={`complex-stats-trend-${data?.chiqim?.percentChange >= 0 ? "green" : "red"
-                    }`}
+                  className={`complex-stats-trend-${
+                    data?.chiqim?.percentChange >= 0 ? "green" : "red"
+                  }`}
                 >
                   {data?.chiqim?.percentChange >= 0 ? "+" : ""}
                   {data?.chiqim?.percentChange}% o'tgan oyga nisbatan
@@ -181,7 +190,8 @@ const Dashboard = () => {
                 <Tooltip
                   formatter={(value, name) => [
                     formatCurrency(value),
-                    name === "income" ? "Daromad" : "Xarajat",
+                    name,
+                    // name === "income" ? "Daromad" : "Xarajat",
                   ]}
                   labelFormatter={(label) => `${label}-kun`}
                 />
@@ -237,33 +247,35 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody className="complex-table-body">
-                {data?.harajatlar?.map((item, index) => (
-                  <tr key={index} className="complex-table-row">
-                    <td className="complex-table-cell">
-                      {moment(item?.createdAt).format("YYYY-MM-DD")}
-                    </td>
-                    <td className="complex-table-cell">
-                      <span
-                        className={`complex-table-cell-type-${item.type.toLowerCase()}`}
-                      >
-                        {item.type}
-                      </span>
-                    </td>
-                    <td className="complex-table-cell complex-table-cell-amount">
-                      {formatCurrency(item.amount)}
-                    </td>
-                    <td className="complex-table-cell complex-table-cell-description">
-                      {item.description}
-                    </td>
-                    <td className="complex-table-cell">
-                      <span
-                        className={`complex-table-cell-category-${item.category.toLowerCase()}`}
-                      >
-                        {item.category}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                {(data?.harajatlar?.slice().reverse() || []).map(
+                  (item, index) => (
+                    <tr key={index} className="complex-table-row">
+                      <td className="complex-table-cell">
+                        {formatDate(item?.createdAt)}
+                      </td>
+                      <td className="complex-table-cell">
+                        <span
+                          className={`complex-table-cell-type-${item.type.toLowerCase()}`}
+                        >
+                          {item.type}
+                        </span>
+                      </td>
+                      <td className="complex-table-cell complex-table-cell-amount">
+                        {formatCurrency(item.amount)}
+                      </td>
+                      <td className="complex-table-cell complex-table-cell-description">
+                        {item.description}
+                      </td>
+                      <td className="complex-table-cell">
+                        <span
+                          className={`complex-table-cell-category-${item.category.toLowerCase()}`}
+                        >
+                          {item.category}
+                        </span>
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </div>
