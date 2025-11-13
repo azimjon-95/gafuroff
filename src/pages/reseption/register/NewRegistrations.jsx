@@ -55,7 +55,7 @@ const NewRegistrations = () => {
     view: viewStatus,
   });
 
-  const filteredData = allStories?.innerData?.stories.filter((i) => {
+  const filteredData = allStories?.innerData?.stories?.filter((i) => {
     if (selectedSpecialization === "Barchasi") return true;
     return i.doctorId.specialization.includes(selectedSpecialization);
   }) || [];
